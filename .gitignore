@@ -1,3 +1,6 @@
+# Ignore Game Binary
+bin/
+
 # Prerequisites
 *.d
 
