@@ -6,6 +6,7 @@
 #include <stdio.h>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 typedef struct
 {
@@ -26,6 +27,12 @@ typedef struct
 {
     bool quit;
 } Keys;
+
+typedef struct
+{
+    int x, y, w, h;
+    SDL_Texture *texture;
+} Player;
 
 
 void handle_keyboard(Keys *keys);
@@ -77,6 +84,12 @@ int main(void)
     // Game Init
     Keys keys = {false};
 
+    Player player;
+    player.texture = IMG_LoadTexture(game.renderer, "assets/player.png");
+    player.x = 100;
+    player.y = 100;
+    SDL_QueryTexture(player.texture, NULL, NULL, &player.w, &player.h);
+
     // Game Loop
     while (1)
     {
@@ -95,6 +108,10 @@ int main(void)
         // Clear previous frame and set background colour
         SDL_SetRenderDrawColor(game.renderer, 96, 128, 255, 255);
         SDL_RenderClear(game.renderer);
+
+        // Render Player
+        SDL_Rect player_rect = {player.x, player.y, player.w, player.h};
+        SDL_RenderCopy(game.renderer, player.texture, NULL, &player_rect);
 
         // Flip front and back buffers
         SDL_RenderPresent(game.renderer);
