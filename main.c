@@ -8,42 +8,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-typedef struct
-{
-    // Game Config
-    int window_width;
-    int window_height;
-
-    // Window
-    SDL_Window *window;
-    SDL_Renderer *renderer;
-
-    // Delatime
-    float delta_time;
-    int last_frame_time;
-} Game;
-
-typedef struct
-{
-    bool quit;
-
-    bool up;
-    bool down;
-    bool left;
-    bool right;
-
-    bool fire;
-} Keys;
-
-typedef struct
-{
-    int x, y, w, h;
-    int x_velocity;
-    int y_velocity;
-    int speed;
-
-    SDL_Texture *texture;
-} Player;
+#include "game.h"
+#include "player.h"
 
 
 void process_input(Keys *keys, Player *player);
@@ -97,13 +63,7 @@ int main(void)
     Keys keys = {false, false, false, false, false, false};
 
     Player player;
-    player.texture = IMG_LoadTexture(game.renderer, "assets/player.png");
-    player.x = 100;
-    player.y = 100;
-    SDL_QueryTexture(player.texture, NULL, NULL, &player.w, &player.h);
-    player.x_velocity = 0;
-    player.y_velocity = 0;
-    player.speed = 500;
+    setup_player(&player, &game);
 
     // Game Loop
     while (1)
@@ -121,6 +81,14 @@ int main(void)
         }
 
         process_input(&keys, &player);
+
+        if (keys.fire && player.reload == 0)
+        {
+            Bullet bullet = {player.x, player.y + (player.h / 2) - (player.bullets->height / 2)};
+            bullet_push_back(player.bullets, bullet);
+
+            player.reload = 16;
+        }
 
         // --- Collision Detection ---
 
@@ -140,6 +108,12 @@ int main(void)
 
         // --- Update entities ---
 
+        //
+        if (player.reload > 0)
+        {
+            player.reload--;
+        }
+
         // Update Player POS
         player.x += player.x_velocity * game.delta_time;
         player.y += player.y_velocity * game.delta_time;
@@ -150,6 +124,21 @@ int main(void)
         SDL_SetRenderDrawColor(game.renderer, 96, 128, 255, 255);
         SDL_RenderClear(game.renderer);
 
+        // Render bullets
+        for (int i = 0, n = player.bullets->size; i < n; i++)
+        {
+            Bullet *bullet = bullet_get(player.bullets, i);
+            bullet->x += player.bullets->speed;
+            if (bullet->x >= game.window_width)
+            {
+                bullet_remove(player.bullets, i);
+                continue;
+            }
+
+            SDL_Rect bullet_rect = {bullet->x, bullet->y, player.bullets->width, player.bullets->height};
+            SDL_RenderCopy(game.renderer, player.bullets->texture, NULL, &bullet_rect);
+        }
+
         // Render Player
         SDL_Rect player_rect = {player.x, player.y, player.w, player.h};
         SDL_RenderCopy(game.renderer, player.texture, NULL, &player_rect);
@@ -159,6 +148,9 @@ int main(void)
     }
 
     // --- Cleanup ---
+
+    // printf("[*] Freeing %i bullets from player\n", player.bullets->size);
+    bullet_free_vector(player.bullets);
 
     SDL_DestroyTexture(player.texture);
 
