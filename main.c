@@ -9,11 +9,8 @@
 #include <SDL2/SDL_image.h>
 
 #include "game.h"
+#include "input.h"
 #include "player.h"
-
-
-void process_input(Keys *keys, Player *player);
-void handle_keyboard(Keys *keys);
 
 
 int main(void)
@@ -36,8 +33,8 @@ int main(void)
 
     game.window = SDL_CreateWindow(
         "SDL Fighter",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
         game.window_width,
         game.window_height,
         0
@@ -81,14 +78,6 @@ int main(void)
         }
 
         process_input(&keys, &player);
-
-        if (keys.fire && player.reload == 0)
-        {
-            Bullet bullet = {player.x, player.y + (player.h / 2) - (player.bullets->height / 2)};
-            bullet_push_back(player.bullets, bullet);
-
-            player.reload = 16;
-        }
 
         // --- Collision Detection ---
 
@@ -163,109 +152,4 @@ int main(void)
     return 0;
 }
 
-void process_input(Keys *keys, Player *player)
-{
-    if (keys->up && !keys->down)
-    {
-        player->y_velocity = -player->speed;
-    }
-    else if (keys->down && !keys->up)
-    {
-        player->y_velocity = player->speed;
-    }
-    else
-    {
-        player->y_velocity = 0;
-    }
 
-    if (keys->left && !keys->right)
-    {
-        player->x_velocity = -player->speed;
-    }
-    else if (keys->right && !keys->left)
-    {
-        player->x_velocity = player->speed;
-    }
-    else
-    {
-        player->x_velocity = 0;
-    }
-
-    return;
-}
-
-
-void handle_keyboard(Keys *keys)
-{
-    SDL_Event event;
-
-    while (SDL_PollEvent(&event))
-    {
-        switch (event.type)
-        {
-            case SDL_QUIT:
-                keys->quit = true;
-                break;
-
-            case SDL_KEYDOWN:
-                if (event.key.repeat == 0)
-                {
-                    switch (event.key.keysym.scancode)
-                    {
-                        case SDL_SCANCODE_W:
-                            keys->up = true;
-                            break;
-                        case SDL_SCANCODE_S:
-                            keys->down = true;
-                            break;
-                        case SDL_SCANCODE_A:
-                            keys->left = true;
-                            break;
-                        case SDL_SCANCODE_D:
-                            keys->right = true;
-                            break;
-                        case SDL_SCANCODE_X:
-                            keys->fire = true;
-                            break;
-                        case SDL_SCANCODE_ESCAPE:
-                            keys->quit = true;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                break;
-
-            case SDL_KEYUP:
-                if (event.key.repeat == 0)
-                {
-                    switch (event.key.keysym.scancode)
-                    {
-                        case SDL_SCANCODE_W:
-                            keys->up = false;
-                            break;
-                        case SDL_SCANCODE_S:
-                            keys->down = false;
-                            break;
-                        case SDL_SCANCODE_A:
-                            keys->left = false;
-                            break;
-                        case SDL_SCANCODE_D:
-                            keys->right = false;
-                            break;
-                        case SDL_SCANCODE_X:
-                            keys->fire = false;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    return;
-}
