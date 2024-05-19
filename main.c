@@ -25,6 +25,8 @@ int main(void)
     game.delta_time = 0.0;
     game.last_frame_time = 0;
 
+    //TODO: Move SDL init into init_sdl function in init.c file.
+
     // Setup SDL
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
@@ -83,17 +85,13 @@ int main(void)
 
         process_input(&keys, &player);
 
-        // --- Collision Detection ---
+        // --- Update entities ---
 
         // Stop player from leaving window
         detect_player_bounds_collision(&player, &game);
 
         // Remove enemies that have left window
         detect_enemy_bounds_collision(&enemy_container);
-
-        //TODO: Add player bullet right bounds check - remove from vector
-
-        // --- Update entities ---
 
         //
         if (player.reload > 0)
@@ -129,39 +127,29 @@ int main(void)
             enemy->x += enemy->x_velocity;
         }
 
+        for (int i = 0, n = player.bullets->size; i < n; i++)
+        {
+            Bullet *bullet = bullet_get(player.bullets, i);
+
+            // Update player bullet positions
+            bullet->x += player.bullets->speed;
+
+            // Check if bullets leave screen
+            if (bullet->x >= game.window_width)
+            {
+                bullet_remove(player.bullets, i);
+                continue;
+            }
+        }
+
         // --- Render ---
 
         // Clear previous frame and set background colour
         SDL_SetRenderDrawColor(game.renderer, 96, 128, 255, 255);
         SDL_RenderClear(game.renderer);
 
-        // Render bullets
-        for (int i = 0, n = player.bullets->size; i < n; i++)
-        {
-            Bullet *bullet = bullet_get(player.bullets, i);
-            //TODO: REMOVE --- DON'T UPDATE IN THE RENDER SECTION
-            bullet->x += player.bullets->speed;
-            if (bullet->x >= game.window_width)
-            {
-                bullet_remove(player.bullets, i);
-                continue;
-            }
-
-            SDL_Rect bullet_rect = {bullet->x, bullet->y, player.bullets->width, player.bullets->height};
-            SDL_RenderCopy(game.renderer, player.bullets->texture, NULL, &bullet_rect);
-        }
-
-        // Render Enemies
-        for (int i = 0, n = enemy_container.enemies->size; i < n; i++)
-        {
-            Enemy *enemy = enemy_get(enemy_container.enemies, i);
-            SDL_Rect enemy_rect = {enemy->x, enemy->y, enemy_container.config.width, enemy_container.config.height};
-            SDL_RenderCopy(game.renderer, enemy_container.config.texture, NULL, &enemy_rect);
-        }
-
-        // Render Player
-        SDL_Rect player_rect = {player.x, player.y, player.w, player.h};
-        SDL_RenderCopy(game.renderer, player.texture, NULL, &player_rect);
+        render_enemies(&enemy_container, &game);
+        render_player(&player, &game);
 
         // Flip front and back buffers
         SDL_RenderPresent(game.renderer);

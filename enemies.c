@@ -2,6 +2,7 @@
 //
 //
 
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 #include "enemies.h"
@@ -18,6 +19,19 @@ void setup_enemies(EnemyContainer *container, Game *game)
     container->config.max = 5;
 
     container->enemies = enemy_create_vector();
+
+    return;
+}
+
+void render_enemies(EnemyContainer *container, Game *game)
+{
+    for (int i = 0, n = container->enemies->size; i < n; i++)
+    {
+        Enemy *enemy = enemy_get(container->enemies, i);
+
+        SDL_Rect enemy_rect = {enemy->x, enemy->y, container->config.width, container->config.height};
+        SDL_RenderCopy(game->renderer, container->config.texture, NULL, &enemy_rect);
+    }
 
     return;
 }

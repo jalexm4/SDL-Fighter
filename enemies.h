@@ -44,6 +44,7 @@ typedef struct
 
 
 void setup_enemies(EnemyContainer *container, Game *game);
+void render_enemies(EnemyContainer *container, Game *game);
 void detect_enemy_bounds_collision(EnemyContainer *container);
 
 EnemyVector *enemy_create_vector();

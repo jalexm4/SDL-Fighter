@@ -41,6 +41,7 @@ typedef struct
 } Player;
 
 void setup_player(Player *player, Game *game);
+void render_player(Player *player, Game *game);
 void detect_player_bounds_collision(Player *player, Game *game);
 
 BulletVector *bullet_create_vector();

@@ -33,6 +33,24 @@ void setup_player(Player *player, Game *game)
     return;
 }
 
+void render_player(Player *player, Game *game)
+{
+    // Render Player Sprite
+    SDL_Rect player_rect = {player->x, player->y, player->w, player->h};
+    SDL_RenderCopy(game->renderer, player->texture, NULL, &player_rect);
+
+    // Render Player Bullets
+    for (int i = 0, n = player->bullets->size; i < n; i++)
+    {
+        Bullet *bullet = bullet_get(player->bullets, i);
+
+        SDL_Rect bullet_rect = {bullet->x, bullet->y, player->bullets->width, player->bullets->height};
+        SDL_RenderCopy(game->renderer, player->bullets->texture, NULL, &bullet_rect);
+    }
+
+    return;
+}
+
 void detect_player_bounds_collision(Player *player, Game *game)
 {
     // Stop player from leaving left or right side of the window
@@ -125,6 +143,8 @@ void bullet_remove(BulletVector *vector, int index)
     {
         vector->data[i] = vector->data[i + 1];
     }
+
+    vector->size--;
 
     return;
 }
