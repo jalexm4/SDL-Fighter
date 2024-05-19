@@ -8,11 +8,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include "enemies.h"
-#include "game.h"
-#include "init.h"
-#include "input.h"
-#include "player.h"
+#include "../include/enemies.h"
+#include "../include/game.h"
+#include "../include/init.h"
+#include "../include/input.h"
+#include "../include/player.h"
 
 
 int main(void)

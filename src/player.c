@@ -8,8 +8,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include "game.h"
-#include "player.h"
+#include "../include/game.h"
+#include "../include/player.h"
 
 void setup_player(Player *player, Game *game)
 {

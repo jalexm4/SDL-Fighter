@@ -5,8 +5,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include "enemies.h"
-#include "game.h"
+#include "../include/enemies.h"
+#include "../include/game.h"
 
 
 void setup_enemies(EnemyContainer *container, Game *game)

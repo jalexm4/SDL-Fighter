@@ -4,8 +4,8 @@
 
 #include <SDL2/SDL.h>
 
-#include "game.h"
-#include "player.h"
+#include "../include/game.h"
+#include "../include/player.h"
 
 
 void process_input(Keys *keys, Player *player)
