@@ -3,7 +3,7 @@ cflags = -std=c18 -Wall -Wextra -Wpedantic
 lflags = `sdl2-config --cflags --libs` -lSDL2_image
 
 build: main.c
-	$(cc) -o bin/game main.c player.c input.c enemies.c $(cflags) $(lflags)
+	$(cc) -o bin/game main.c player.c input.c enemies.c init.c $(cflags) $(lflags)
 
 run: build
 	bin/game

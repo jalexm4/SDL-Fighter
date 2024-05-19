@@ -10,6 +10,7 @@
 
 #include "enemies.h"
 #include "game.h"
+#include "init.h"
 #include "input.h"
 #include "player.h"
 
@@ -25,37 +26,9 @@ int main(void)
     game.delta_time = 0.0;
     game.last_frame_time = 0;
 
-    //TODO: Move SDL init into init_sdl function in init.c file.
-
-    // Setup SDL
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
+    if (init_sdl(&game))
     {
-        printf("[*] SDL Failed to start...\n[*] Exiting...\n");
-        return 1;
-    }
-
-    game.window = SDL_CreateWindow(
-        "SDL Fighter",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        game.window_width,
-        game.window_height,
-        0
-    );
-
-    if(!game.window)
-    {
-        printf("[*] Failed to create window...\n[*] Exiting...\n");
-        return 1;
-    }
-
-
-    Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
-    game.renderer = SDL_CreateRenderer(game.window, -1, render_flags);
-
-    if(!game.renderer)
-    {
-        printf("[*] Failed to create renderer...\n[*] Exiting...\n");
+        printf("[*] Exiting...\n");
         return 1;
     }
 
