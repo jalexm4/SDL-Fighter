@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "../include/collision.h"
 #include "../include/enemies.h"
 #include "../include/game.h"
 #include "../include/init.h"
@@ -58,7 +59,7 @@ int main(void)
 
         process_input(&keys, &player);
 
-        // --- Update entities ---
+        // --- Update Entities ---
 
         // Stop player from leaving window
         detect_player_bounds_collision(&player, &game);
@@ -66,7 +67,7 @@ int main(void)
         // Remove enemies that have left window
         detect_enemy_bounds_collision(&enemy_container);
 
-        //
+        // Reload timer
         if (player.reload > 0)
         {
             player.reload--;
@@ -76,7 +77,7 @@ int main(void)
         player.x += player.x_velocity * game.delta_time;
         player.y += player.y_velocity * game.delta_time;
 
-        //
+        // Add new enemies to screen
         if (enemy_container.config.respawn_timer <= 0 && enemy_container.config.alive < enemy_container.config.max)
         {
             enemy_container.config.respawn_timer = 30 + (rand() % 60);
@@ -94,12 +95,14 @@ int main(void)
             enemy_container.config.respawn_timer--;
         }
 
+        // Update Enemy POS
         for (int i = 0, n = enemy_container.enemies->size; i < n; i++)
         {
             Enemy *enemy = enemy_get(enemy_container.enemies, i);
             enemy->x += enemy->x_velocity;
         }
 
+        // Update Player bullets
         for (int i = 0, n = player.bullets->size; i < n; i++)
         {
             Bullet *bullet = bullet_get(player.bullets, i);
@@ -112,6 +115,22 @@ int main(void)
             {
                 bullet_remove(player.bullets, i);
                 continue;
+            }
+
+            // Check AABB of bullet to each enemy
+            for (int j = 0, enemy_size = enemy_container.enemies->size; j < enemy_size; j++)
+            {
+                Enemy *enemy = enemy_get(enemy_container.enemies, j);
+
+                //TODO: Refactor - Don't like the function arguments.
+                if (aabb_collision_detection(bullet->x, bullet->y, player.bullets->width, player.bullets->height, enemy->x, enemy->y, enemy_container.config.width, enemy_container.config.height))
+                {
+                    // Remove collided enemy and bullet
+                    bullet_remove(player.bullets, i);
+                    enemy_remove(enemy_container.enemies, j);
+
+                    break;
+                }
             }
         }
 
