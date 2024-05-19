@@ -33,6 +33,26 @@ void setup_player(Player *player, Game *game)
     return;
 }
 
+void detect_player_bounds_collision(Player *player, Game *game)
+{
+    // Stop player from leaving left or right side of the window
+    int player_x_movement = player->x_velocity * game->delta_time;
+    if (player->x + player_x_movement < 0 || (player->x + player->w) + player_x_movement > game->window_width)
+    {
+        player->x_velocity = 0;
+    }
+
+    // Stop player from leaving top or bottom side of the window
+    int player_y_movement = player->y_velocity * game->delta_time;
+    if (player->y + player_y_movement < 0 || (player->y + player->h) + player_y_movement > game->window_height)
+    {
+        player->y_velocity = 0;
+    }
+
+    return;
+}
+
+
 BulletVector *bullet_create_vector()
 {
     // Allocate data for a vector
@@ -43,8 +63,8 @@ BulletVector *bullet_create_vector()
         return NULL;
     }
 
-    // Allocate room for 10 particles (to start with)
-    vector->data = malloc(10 * sizeof(BulletVector));
+    // Allocate room for 10 bullets
+    vector->data = malloc(10 * sizeof(Bullet));
     if (vector->data == NULL)
     {
         printf("[*] Unable to allocate memory\n");

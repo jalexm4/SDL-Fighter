@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "enemies.h"
 #include "game.h"
 #include "input.h"
 #include "player.h"
@@ -62,7 +63,10 @@ int main(void)
     Player player;
     setup_player(&player, &game);
 
-    // Game Loop
+    EnemyContainer enemy_container;
+    setup_enemies(&enemy_container, &game);
+
+    // --- Game Loop ---
     while (1)
     {
         // Deltatime for current frame
@@ -81,19 +85,13 @@ int main(void)
 
         // --- Collision Detection ---
 
-        // Stop player from leaving left or right side of the window
-        int player_x_movement = player.x_velocity * game.delta_time;
-        if (player.x + player_x_movement < 0 || (player.x + player.w) + player_x_movement > game.window_width)
-        {
-            player.x_velocity = 0;
-        }
+        // Stop player from leaving window
+        detect_player_bounds_collision(&player, &game);
 
-        // Stop player from leaving top or bottom side of the window
-        int player_y_movement = player.y_velocity * game.delta_time;
-        if (player.y + player_y_movement < 0 || (player.y + player.h) + player_y_movement > game.window_height)
-        {
-            player.y_velocity = 0;
-        }
+        // Remove enemies that have left window
+        detect_enemy_bounds_collision(&enemy_container);
+
+        //TODO: Add player bullet right bounds check - remove from vector
 
         // --- Update entities ---
 
@@ -107,6 +105,30 @@ int main(void)
         player.x += player.x_velocity * game.delta_time;
         player.y += player.y_velocity * game.delta_time;
 
+        //
+        if (enemy_container.config.respawn_timer <= 0 && enemy_container.config.alive < enemy_container.config.max)
+        {
+            enemy_container.config.respawn_timer = 30 + (rand() % 60);
+            enemy_container.config.alive++;
+
+            Enemy new_enemy;
+            new_enemy.x = game.window_width;
+            new_enemy.y = rand() % game.window_height;
+            new_enemy.x_velocity = -(2 + (rand() % 4));
+
+            enemy_push_back(enemy_container.enemies, new_enemy);
+        }
+        else
+        {
+            enemy_container.config.respawn_timer--;
+        }
+
+        for (int i = 0, n = enemy_container.enemies->size; i < n; i++)
+        {
+            Enemy *enemy = enemy_get(enemy_container.enemies, i);
+            enemy->x += enemy->x_velocity;
+        }
+
         // --- Render ---
 
         // Clear previous frame and set background colour
@@ -117,6 +139,7 @@ int main(void)
         for (int i = 0, n = player.bullets->size; i < n; i++)
         {
             Bullet *bullet = bullet_get(player.bullets, i);
+            //TODO: REMOVE --- DON'T UPDATE IN THE RENDER SECTION
             bullet->x += player.bullets->speed;
             if (bullet->x >= game.window_width)
             {
@@ -126,6 +149,14 @@ int main(void)
 
             SDL_Rect bullet_rect = {bullet->x, bullet->y, player.bullets->width, player.bullets->height};
             SDL_RenderCopy(game.renderer, player.bullets->texture, NULL, &bullet_rect);
+        }
+
+        // Render Enemies
+        for (int i = 0, n = enemy_container.enemies->size; i < n; i++)
+        {
+            Enemy *enemy = enemy_get(enemy_container.enemies, i);
+            SDL_Rect enemy_rect = {enemy->x, enemy->y, enemy_container.config.width, enemy_container.config.height};
+            SDL_RenderCopy(game.renderer, enemy_container.config.texture, NULL, &enemy_rect);
         }
 
         // Render Player
@@ -138,10 +169,13 @@ int main(void)
 
     // --- Cleanup ---
 
-    // printf("[*] Freeing %i bullets from player\n", player.bullets->size);
+    printf("[*] Freeing %i bullets from player\n", player.bullets->size);
+    printf("[*] Freeing %i enemies\n", enemy_container.enemies->size);
     bullet_free_vector(player.bullets);
+    enemy_free_vector(enemy_container.enemies);
 
     SDL_DestroyTexture(player.texture);
+    SDL_DestroyTexture(enemy_container.config.texture);
 
     SDL_DestroyWindow(game.window);
     SDL_DestroyRenderer(game.renderer);
