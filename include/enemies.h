@@ -9,12 +9,15 @@
 #include <SDL2/SDL.h>
 
 #include "game.h"
+#include "player.h"
 
 typedef struct
 {
     int x;
     int y;
     int x_velocity;
+    int health;
+    int attack_timer;
 } Enemy;
 
 typedef struct
@@ -33,12 +36,19 @@ typedef struct
     int respawn_timer;
     int alive;
     int max;
+    int default_health;
 
+    // Enemy bullets
+    SDL_Texture *bullet_texture;
+    int bullet_width;
+    int bullet_height;
+    int bullet_speed;
 } EnemyConfig;
 
 typedef struct
 {
     EnemyVector *enemies;
+    BulletVector *bullets;
     EnemyConfig config;
 } EnemyContainer;
 

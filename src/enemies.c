@@ -7,6 +7,7 @@
 
 #include "../include/enemies.h"
 #include "../include/game.h"
+#include "../include/player.h"
 
 
 void setup_enemies(EnemyContainer *container, Game *game)
@@ -14,23 +15,39 @@ void setup_enemies(EnemyContainer *container, Game *game)
     container->config.texture = IMG_LoadTexture(game->renderer, "assets/enemy.png");
     SDL_QueryTexture(container->config.texture, NULL, NULL, &container->config.width, &container->config.height);
 
+    container->config.bullet_texture = IMG_LoadTexture(game->renderer, "assets/enemy_bullet.png");
+    SDL_QueryTexture(container->config.bullet_texture, NULL, NULL, &container->config.bullet_width, &container->config.bullet_height);
+
     container->config.respawn_timer = -1;
     container->config.alive = 0;
     container->config.max = 5;
+    container->config.default_health = 1;
+    container->config.bullet_speed = -10;
 
     container->enemies = enemy_create_vector();
+    container->bullets = bullet_create_vector();
 
     return;
 }
 
 void render_enemies(EnemyContainer *container, Game *game)
 {
+    // Render enemies
     for (int i = 0, n = container->enemies->size; i < n; i++)
     {
         Enemy *enemy = enemy_get(container->enemies, i);
 
         SDL_Rect enemy_rect = {enemy->x, enemy->y, container->config.width, container->config.height};
         SDL_RenderCopy(game->renderer, container->config.texture, NULL, &enemy_rect);
+    }
+
+    // Render enemies bullets
+    for (int i = 0, n = container->bullets->size; i < n; i++)
+    {
+        Bullet *bullet = bullet_get(container->bullets, i);
+
+        SDL_Rect bullet_rect = {bullet->x, bullet->y, container->config.bullet_width, container->config.bullet_height};
+        SDL_RenderCopy(game->renderer, container->config.bullet_texture, NULL, &bullet_rect);
     }
 
     return;

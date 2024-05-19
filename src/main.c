@@ -90,6 +90,8 @@ int main(void)
             new_enemy.x = game.window_width;
             new_enemy.y = rand() % game.window_height;
             new_enemy.x_velocity = -(2 + (rand() % 4));
+            new_enemy.health = enemy_container.config.default_health;
+            new_enemy.attack_timer = 100;
 
             enemy_push_back(enemy_container.enemies, new_enemy);
         }
@@ -98,11 +100,46 @@ int main(void)
             enemy_container.config.respawn_timer--;
         }
 
-        // Update Enemy POS
+        // Update Enemy POS and attack
         for (int i = 0, n = enemy_container.enemies->size; i < n; i++)
         {
             Enemy *enemy = enemy_get(enemy_container.enemies, i);
             enemy->x += enemy->x_velocity;
+            enemy->attack_timer--;
+
+            // Enemy is attacking - Add a new bullet.
+            if (enemy->attack_timer <= 0)
+            {
+                enemy->attack_timer = 100;
+                Bullet new_bullet;
+
+                //TODO: Calculate slope between enemy and player to fire bullet at player
+                new_bullet.x = enemy->x;
+                new_bullet.y = enemy->y;
+
+                bullet_push_back(enemy_container.bullets, new_bullet);
+            }
+        }
+
+        // Update Enemy Bullets
+        for (int i = 0, n = enemy_container.bullets->size; i < n; i++)
+        {
+            Bullet *bullet = bullet_get(enemy_container.bullets, i);
+            bullet->x += enemy_container.config.bullet_speed;
+
+            // Destroy any bullets that leave left side of the window
+            if (bullet->x <= 0)
+            {
+                bullet_remove(enemy_container.bullets, i);
+            }
+
+            //
+            if (aabb_collision_detection(player.x, player.y, player.w, player.h, bullet->x, bullet->y, enemy_container.config.bullet_width, enemy_container.config.bullet_height))
+            {
+                bullet_remove(enemy_container.bullets, i);
+
+                //TODO: Player health
+            }
         }
 
         // Update Player bullets
@@ -128,9 +165,13 @@ int main(void)
                 //TODO: Refactor - Don't like the function arguments.
                 if (aabb_collision_detection(bullet->x, bullet->y, player.bullets->width, player.bullets->height, enemy->x, enemy->y, enemy_container.config.width, enemy_container.config.height))
                 {
-                    // Remove collided enemy and bullet
                     bullet_remove(player.bullets, i);
-                    enemy_remove(enemy_container.enemies, j);
+                    enemy->health--;
+
+                    if (enemy->health <= 0)
+                    {
+                        enemy_remove(enemy_container.enemies, j);
+                    }
 
                     break;
                 }
@@ -167,9 +208,11 @@ int main(void)
 
     // --- Cleanup ---
 
-    printf("[*] Freeing %i bullets from player\n", player.bullets->size);
+    printf("\n[*] Freeing %i bullets from player\n", player.bullets->size);
+    printf("[*] Freeing %i bullets from enemies\n", enemy_container.bullets->size);
     printf("[*] Freeing %i enemies\n", enemy_container.enemies->size);
     bullet_free_vector(player.bullets);
+    bullet_free_vector(enemy_container.bullets);
     enemy_free_vector(enemy_container.enemies);
 
     SDL_DestroyTexture(player.texture);
