@@ -26,6 +26,9 @@ int main(void)
 
     game.delta_time = 0.0;
     game.last_frame_time = 0;
+    game.fps = 60;
+    game.frame_counter = 0;
+    game.frame_time = 0.0;
 
     if (init_sdl(&game))
     {
@@ -145,6 +148,21 @@ int main(void)
 
         // Flip front and back buffers
         SDL_RenderPresent(game.renderer);
+
+        // --- FPS ---
+
+        game.frame_counter++;
+        game.frame_time += game.delta_time;
+
+        // Second has passed
+        if (game.frame_time > 1.0)
+        {
+            game.fps = game.frame_counter / game.frame_time;
+            game.frame_counter = 0;
+            game.frame_time = 0;
+
+            printf("[*] %i FPS\n", game.fps);
+        }
     }
 
     // --- Cleanup ---

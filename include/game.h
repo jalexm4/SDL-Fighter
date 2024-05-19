@@ -20,6 +20,11 @@ typedef struct
     // Delatime
     float delta_time;
     int last_frame_time;
+
+    // FPS
+    int fps;
+    int frame_counter;
+    float frame_time;
 } Game;
 
 typedef struct
