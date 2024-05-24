@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "../include/bullets.h"
 #include "../include/collision.h"
 #include "../include/enemies.h"
 #include "../include/game.h"
@@ -64,21 +65,10 @@ int main(void)
 
         // --- Update Entities ---
 
-        // Stop player from leaving window
-        detect_player_bounds_collision(&player, &game);
+        update_player(&player, &game, &enemy_container);
 
         // Remove enemies that have left window
         detect_enemy_bounds_collision(&enemy_container);
-
-        // Reload timer
-        if (player.reload > 0)
-        {
-            player.reload--;
-        }
-
-        // Update Player POS
-        player.x += player.x_velocity * game.delta_time;
-        player.y += player.y_velocity * game.delta_time;
 
         // Add new enemies to screen
         if (enemy_container.config.respawn_timer <= 0 && enemy_container.config.alive < enemy_container.config.max)
@@ -142,41 +132,41 @@ int main(void)
             }
         }
 
-        // Update Player bullets
-        for (int i = 0, n = player.bullets->size; i < n; i++)
-        {
-            Bullet *bullet = bullet_get(player.bullets, i);
-
-            // Update player bullet positions
-            bullet->x += player.bullet_speed;
-
-            // Check if bullets leave screen
-            if (bullet->x >= game.window_width)
-            {
-                bullet_remove(player.bullets, i);
-                continue;
-            }
-
-            // Check AABB of bullet to each enemy
-            for (int j = 0, enemy_size = enemy_container.enemies->size; j < enemy_size; j++)
-            {
-                Enemy *enemy = enemy_get(enemy_container.enemies, j);
-
-                //TODO: Refactor - Don't like the function arguments.
-                if (aabb_collision_detection(bullet->x, bullet->y, player.bullet_width, player.bullet_height, enemy->x, enemy->y, enemy_container.config.width, enemy_container.config.height))
-                {
-                    bullet_remove(player.bullets, i);
-                    enemy->health--;
-
-                    if (enemy->health <= 0)
-                    {
-                        enemy_remove(enemy_container.enemies, j);
-                    }
-
-                    break;
-                }
-            }
-        }
+        // // Update Player bullets
+        // for (int i = 0, n = player.bullets->size; i < n; i++)
+        // {
+        //     Bullet *bullet = bullet_get(player.bullets, i);
+        //
+        //     // Update player bullet positions
+        //     bullet->x += player.bullet_speed;
+        //
+        //     // Check if bullets leave screen
+        //     if (bullet->x >= game.window_width)
+        //     {
+        //         bullet_remove(player.bullets, i);
+        //         continue;
+        //     }
+        //
+        //     // Check AABB of bullet to each enemy
+        //     for (int j = 0, enemy_size = enemy_container.enemies->size; j < enemy_size; j++)
+        //     {
+        //         Enemy *enemy = enemy_get(enemy_container.enemies, j);
+        //
+        //         //TODO: Refactor - Don't like the function arguments.
+        //         if (aabb_collision_detection(bullet->x, bullet->y, player.bullet_width, player.bullet_height, enemy->x, enemy->y, enemy_container.config.width, enemy_container.config.height))
+        //         {
+        //             bullet_remove(player.bullets, i);
+        //             enemy->health--;
+        //
+        //             if (enemy->health <= 0)
+        //             {
+        //                 enemy_remove(enemy_container.enemies, j);
+        //             }
+        //
+        //             break;
+        //         }
+        //     }
+        // }
 
         // --- Render ---
 

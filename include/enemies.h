@@ -8,8 +8,9 @@
 
 #include <SDL2/SDL.h>
 
+#include "bullets.h"
 #include "game.h"
-#include "player.h"
+
 
 typedef struct
 {
