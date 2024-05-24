@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "../include/background.h"
 #include "../include/bullets.h"
 #include "../include/collision.h"
 #include "../include/enemies.h"
@@ -46,6 +47,10 @@ int main(void)
     EnemyContainer enemy_container;
     setup_enemies(&enemy_container, &game);
 
+    Background background;
+    background.texture = IMG_LoadTexture(game.renderer, "assets/background.png");
+    background.x_shift = 0;
+
     // --- Game Loop ---
     while (1)
     {
@@ -68,14 +73,17 @@ int main(void)
         update_player(&player, &game, &enemy_container);
         update_enemies(&enemy_container, &game, &player);
 
+        update_background(&background, &game);
+
         // --- Render ---
 
-        // Clear previous frame and set background colour
-        SDL_SetRenderDrawColor(game.renderer, 96, 128, 255, 255);
+        // Clear previous frame
         SDL_RenderClear(game.renderer);
 
-        render_enemies(&enemy_container, &game);
+        render_background(&background, &game);
+
         render_player(&player, &game);
+        render_enemies(&enemy_container, &game);
 
         // Flip front and back buffers
         SDL_RenderPresent(game.renderer);
@@ -102,6 +110,7 @@ int main(void)
     bullet_free_vector(enemy_container.bullets);
     enemy_free_vector(enemy_container.enemies);
 
+    SDL_DestroyTexture(background.texture);
     SDL_DestroyTexture(player.texture);
     SDL_DestroyTexture(enemy_container.config.texture);
     SDL_DestroyTexture(player.bullet_texture);
