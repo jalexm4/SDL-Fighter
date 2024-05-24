@@ -148,7 +148,7 @@ int main(void)
             Bullet *bullet = bullet_get(player.bullets, i);
 
             // Update player bullet positions
-            bullet->x += player.bullets->speed;
+            bullet->x += player.bullet_speed;
 
             // Check if bullets leave screen
             if (bullet->x >= game.window_width)
@@ -163,7 +163,7 @@ int main(void)
                 Enemy *enemy = enemy_get(enemy_container.enemies, j);
 
                 //TODO: Refactor - Don't like the function arguments.
-                if (aabb_collision_detection(bullet->x, bullet->y, player.bullets->width, player.bullets->height, enemy->x, enemy->y, enemy_container.config.width, enemy_container.config.height))
+                if (aabb_collision_detection(bullet->x, bullet->y, player.bullet_width, player.bullet_height, enemy->x, enemy->y, enemy_container.config.width, enemy_container.config.height))
                 {
                     bullet_remove(player.bullets, i);
                     enemy->health--;
@@ -214,7 +214,7 @@ int main(void)
 
     SDL_DestroyTexture(player.texture);
     SDL_DestroyTexture(enemy_container.config.texture);
-    SDL_DestroyTexture(player.bullets->texture);
+    SDL_DestroyTexture(player.bullet_texture);
     SDL_DestroyTexture(enemy_container.config.bullet_texture);
 
     SDL_DestroyWindow(game.window);

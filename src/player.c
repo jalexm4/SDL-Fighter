@@ -13,9 +13,8 @@
 
 void setup_player(Player *player, Game *game)
 {
-
-
     player->texture = IMG_LoadTexture(game->renderer, "assets/player.png");
+    player->bullet_texture = IMG_LoadTexture(game->renderer, "assets/player_bullet.png");
 
     player->x = 100;
     player->y = 100;
@@ -24,11 +23,10 @@ void setup_player(Player *player, Game *game)
     player->y_velocity = 0;
     player->speed = 500;
 
-    player->reload = 0;
     player->bullets = bullet_create_vector();
-    player->bullets->texture = IMG_LoadTexture(game->renderer, "assets/player_bullet.png");
-    SDL_QueryTexture(player->bullets->texture, NULL, NULL, &player->bullets->width, &player->bullets->height);
-    player->bullets->speed = 16;
+    player->reload = 0;
+    SDL_QueryTexture(player->bullet_texture, NULL, NULL, &player->bullet_width, &player->bullet_height);
+    player->bullet_speed = 16;
 
     return;
 }
@@ -44,8 +42,8 @@ void render_player(Player *player, Game *game)
     {
         Bullet *bullet = bullet_get(player->bullets, i);
 
-        SDL_Rect bullet_rect = {bullet->x, bullet->y, player->bullets->width, player->bullets->height};
-        SDL_RenderCopy(game->renderer, player->bullets->texture, NULL, &bullet_rect);
+        SDL_Rect bullet_rect = {bullet->x, bullet->y, player->bullet_width, player->bullet_height};
+        SDL_RenderCopy(game->renderer, player->bullet_texture, NULL, &bullet_rect);
     }
 
     return;

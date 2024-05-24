@@ -19,25 +19,23 @@ typedef struct
     Bullet *data;
     unsigned int size;
     unsigned int capacity;
-
-    // General Bullet Properties
-    SDL_Texture *texture;
-    int width;
-    int height;
-    int speed;
 } BulletVector;
 
 typedef struct
 {
+    SDL_Texture *texture;
+    SDL_Texture *bullet_texture;
+
     int x, y, w, h;
     int x_velocity;
     int y_velocity;
     int speed;
 
-    int reload;
     BulletVector *bullets;
-
-    SDL_Texture *texture;
+    int reload;
+    int bullet_width;
+    int bullet_height;
+    int bullet_speed;
 } Player;
 
 void setup_player(Player *player, Game *game);
