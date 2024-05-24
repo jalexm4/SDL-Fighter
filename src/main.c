@@ -4,6 +4,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <time.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -20,6 +21,9 @@
 
 int main(void)
 {
+    // Seed PRNG
+    srand(time(NULL));
+
     // Game Config
     Game game;
 
@@ -50,6 +54,8 @@ int main(void)
     Background background;
     background.texture = IMG_LoadTexture(game.renderer, "assets/background.png");
     background.x_shift = 0;
+
+    setup_starfield(background.stars, &game);
 
     // --- Game Loop ---
     while (1)
