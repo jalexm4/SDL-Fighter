@@ -5,10 +5,26 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "../include/bullets.h"
+#include "../include/collision.h"
 #include "../include/enemies.h"
 #include "../include/game.h"
 #include "../include/player.h"
 
+
+static void detect_enemy_bounds_collision(EnemyContainer *container)
+{
+    for (int i = 0, n = container->enemies->size; i < n; i++)
+    {
+        Enemy *enemy = enemy_get(container->enemies, i);
+        if (enemy->x + container->config.width < 0)
+        {
+            enemy_remove(container->enemies, i);
+        }
+    }
+
+    return;
+}
 
 void setup_enemies(EnemyContainer *container, Game *game)
 {
@@ -26,6 +42,81 @@ void setup_enemies(EnemyContainer *container, Game *game)
 
     container->enemies = enemy_create_vector();
     container->bullets = bullet_create_vector();
+
+    return;
+}
+
+void update_enemies(EnemyContainer *container, Game *game, Player *player)
+{
+    // Kill any enemy that has left the window
+    detect_enemy_bounds_collision(container);
+
+    // Spawn new enemies
+    if (container->config.respawn_timer <= 0 && container->config.alive < container->config.max)
+    {
+        // Reset respawn timer
+        container->config.respawn_timer = 30 + (rand() % 60);
+
+        // Number of enemies currently active
+        container->config.alive++;
+
+        // New enemy preset
+        Enemy new_enemy;
+        new_enemy.x = game->window_width;
+        new_enemy.y = rand() % game->window_height;
+        new_enemy.x_velocity = -(2 + (rand() % 4));
+        new_enemy.health = container->config.default_health;
+        new_enemy.attack_timer = 100;
+
+        enemy_push_back(container->enemies, new_enemy);
+    }
+    else
+    {
+        container->config.respawn_timer--;
+    }
+
+    // Update Enemy POS and attack
+    for (int i = 0, n = container->enemies->size; i < n; i++)
+    {
+        Enemy *enemy = enemy_get(container->enemies, i);
+        enemy->x += enemy->x_velocity;
+        enemy->attack_timer--;
+
+        // Enemy is attacking - Add a new bullet.
+        if (enemy->attack_timer <= 0)
+        {
+            // Reset current enemies attack timer
+            enemy->attack_timer = 100;
+
+            //TODO: Calculate slope between enemy and player to fire bullet at player
+            Bullet new_bullet;
+            new_bullet.x = enemy->x;
+            new_bullet.y = enemy->y + (container->config.height / 2) - (container->config.bullet_height / 2);
+
+            bullet_push_back(container->bullets, new_bullet);
+        }
+    }
+
+    // Update Enemy Bullets
+    for (int i = 0, n = container->bullets->size; i < n; i++)
+    {
+        Bullet *bullet = bullet_get(container->bullets, i);
+        bullet->x += container->config.bullet_speed;
+
+        // Destroy any bullets that leave left side of the window
+        if (bullet->x <= 0)
+        {
+            bullet_remove(container->bullets, i);
+        }
+
+        //
+        if (aabb_collision_detection(player->x, player->y, player->w, player->h, bullet->x, bullet->y, container->config.bullet_width, container->config.bullet_height))
+        {
+            bullet_remove(container->bullets, i);
+
+            //TODO: Player health
+        }
+    }
 
     return;
 }
@@ -48,20 +139,6 @@ void render_enemies(EnemyContainer *container, Game *game)
 
         SDL_Rect bullet_rect = {bullet->x, bullet->y, container->config.bullet_width, container->config.bullet_height};
         SDL_RenderCopy(game->renderer, container->config.bullet_texture, NULL, &bullet_rect);
-    }
-
-    return;
-}
-
-void detect_enemy_bounds_collision(EnemyContainer *container)
-{
-    for (int i = 0, n = container->enemies->size; i < n; i++)
-    {
-        Enemy *enemy = enemy_get(container->enemies, i);
-        if (enemy->x + container->config.width < 0)
-        {
-            enemy_remove(container->enemies, i);
-        }
     }
 
     return;

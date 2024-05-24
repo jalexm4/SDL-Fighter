@@ -7,7 +7,6 @@
 #include <SDL2/SDL.h>
 
 #include "bullets.h"
-#include "enemies.h"
 
 
 typedef struct
@@ -26,6 +25,9 @@ typedef struct
     int bullet_height;
     int bullet_speed;
 } Player;
+
+//TODO: ^ Forward declartion to avoid circular dependency. Find better solution.
+#include "enemies.h"
 
 void setup_player(Player *player, Game *game);
 void update_player(Player *player, Game *game, EnemyContainer *enemy_container);

@@ -10,6 +10,7 @@
 
 #include "bullets.h"
 #include "game.h"
+// #include "player.h"
 
 
 typedef struct
@@ -53,10 +54,13 @@ typedef struct
     EnemyConfig config;
 } EnemyContainer;
 
+//TODO: ^ Forward declartion to avoid circular dependency. Find better solution.
+#include "player.h"
+
 
 void setup_enemies(EnemyContainer *container, Game *game);
+void update_enemies(EnemyContainer *container, Game *game, Player *player);
 void render_enemies(EnemyContainer *container, Game *game);
-void detect_enemy_bounds_collision(EnemyContainer *container);
 
 EnemyVector *enemy_create_vector();
 void enemy_free_vector(EnemyVector *vector);
