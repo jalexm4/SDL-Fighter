@@ -4,14 +4,16 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
+#include "../include/audio.h"
 #include "../include/game.h"
 
 
 int init_sdl(Game *game)
 {
     // Start SDL
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
     {
         printf("[*] SDL Failed to start...\n");
         return 1;
@@ -44,9 +46,26 @@ int init_sdl(Game *game)
     // Start SDL Image
     if (IMG_Init(IMG_INIT_PNG) == 0)
     {
-        printf("[*] SDL_image failed to start...");
+        printf("[*] SDL_image failed to start...\n");
         return 1;
     }
+
+    // Start SDL Mixer
+    if (Mix_Init(MIX_INIT_OGG) == 0)
+    {
+        printf("[*] SDL_mixer failed to start...\n");
+        return 1;
+    }
+
+    // Open Audio Device
+    if (Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 2048) == -1)
+    {
+        printf("[*] Failed to open audio device...\n");
+        return 1;
+    }
+
+    // Number of different sounds being played concurrently
+    Mix_AllocateChannels(AUDIO_MAX_CHANNELS);
 
     // Disable Mouse Cursor
     SDL_ShowCursor(0);

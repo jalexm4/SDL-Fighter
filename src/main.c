@@ -8,7 +8,9 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
+#include "../include/audio.h"
 #include "../include/background.h"
 #include "../include/bullets.h"
 #include "../include/collision.h"
@@ -36,6 +38,8 @@ int main(void)
     game.frame_counter = 0;
     game.frame_time = 0.0;
 
+    game.bg_music = NULL;
+
     if (init_sdl(&game))
     {
         printf("[*] Exiting...\n");
@@ -51,11 +55,16 @@ int main(void)
     EnemyContainer enemy_container;
     setup_enemies(&enemy_container, &game);
 
+    load_music(&game, "assets/audio/bg_music.ogg");
+
     Background background;
     background.texture = IMG_LoadTexture(game.renderer, "assets/background.png");
     background.x_shift = 0;
 
     setup_starfield(background.stars, &game);
+
+    // Start background music
+    Mix_PlayMusic(game.bg_music, -1);
 
     // --- Game Loop ---
     while (1)
@@ -122,13 +131,17 @@ int main(void)
     SDL_DestroyTexture(player.bullet_texture);
     SDL_DestroyTexture(enemy_container.config.bullet_texture);
 
+    Mix_FreeMusic(game.bg_music);
+
+    Mix_CloseAudio();
+
     SDL_DestroyWindow(game.window);
     SDL_DestroyRenderer(game.renderer);
 
     // Terminate SDL
+    Mix_Quit();
     IMG_Quit();
     SDL_Quit();
-
 
     return 0;
 }

@@ -6,6 +6,9 @@
 
 #include <stdbool.h>
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+
 
 typedef struct
 {
@@ -25,6 +28,9 @@ typedef struct
     int fps;
     int frame_counter;
     float frame_time;
+
+    // Audio
+    Mix_Music *bg_music;
 } Game;
 
 typedef struct
