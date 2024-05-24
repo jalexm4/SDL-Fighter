@@ -3,6 +3,7 @@
 //
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "../include/game.h"
 
@@ -40,6 +41,14 @@ int init_sdl(Game *game)
         return 1;
     }
 
+    // Start SDL Image
+    if (IMG_Init(IMG_INIT_PNG) == 0)
+    {
+        printf("[*] SDL_image failed to start...");
+        return 1;
+    }
+
+    // Disable Mouse Cursor
     SDL_ShowCursor(0);
 
     return 0;

@@ -26,7 +26,7 @@ int main(void)
 
     game.delta_time = 0.0;
     game.last_frame_time = 0;
-    game.fps = 60;
+    game.fps = 0;
     game.frame_counter = 0;
     game.frame_time = 0.0;
 
@@ -36,7 +36,7 @@ int main(void)
         return 1;
     }
 
-    // Game Init
+    // Game Entities Setup
     Keys keys = {false, false, false, false, false, false};
 
     Player player;
@@ -208,21 +208,22 @@ int main(void)
 
     // --- Cleanup ---
 
-    printf("\n[*] Freeing %i bullets from player\n", player.bullets->size);
-    printf("[*] Freeing %i bullets from enemies\n", enemy_container.bullets->size);
-    printf("[*] Freeing %i enemies\n", enemy_container.enemies->size);
     bullet_free_vector(player.bullets);
     bullet_free_vector(enemy_container.bullets);
     enemy_free_vector(enemy_container.enemies);
 
     SDL_DestroyTexture(player.texture);
     SDL_DestroyTexture(enemy_container.config.texture);
+    SDL_DestroyTexture(player.bullets->texture);
+    SDL_DestroyTexture(enemy_container.config.bullet_texture);
 
     SDL_DestroyWindow(game.window);
     SDL_DestroyRenderer(game.renderer);
 
     // Terminate SDL
+    IMG_Quit();
     SDL_Quit();
+
 
     return 0;
 }
