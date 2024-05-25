@@ -24,3 +24,10 @@ void load_music(Game *game, char *filepath)
 
     return;
 }
+
+void play_sfx(Mix_Chunk *sfx, int channel)
+{
+    Mix_PlayChannel(channel, sfx, 0);
+
+    return;
+}

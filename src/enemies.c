@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "../include/audio.h"
 #include "../include/bullets.h"
 #include "../include/collision.h"
 #include "../include/enemies.h"
@@ -42,6 +43,9 @@ void setup_enemies(EnemyContainer *container, Game *game)
 
     container->enemies = enemy_create_vector();
     container->bullets = bullet_create_vector();
+
+    container->sounds[ENEMY_FIRE] = Mix_LoadWAV("assets/audio/alien_fire.ogg");
+    container->sounds[ENEMY_DIE] = Mix_LoadWAV("assets/audio/alien_die.ogg");
 
     return;
 }
@@ -94,6 +98,8 @@ void update_enemies(EnemyContainer *container, Game *game, Player *player)
             new_bullet.y = enemy->y + (container->config.height / 2) - (container->config.bullet_height / 2);
 
             bullet_push_back(container->bullets, new_bullet);
+
+            play_sfx(container->sounds[ENEMY_FIRE], CH_ENEMY_FIRE);
         }
     }
 
@@ -109,12 +115,20 @@ void update_enemies(EnemyContainer *container, Game *game, Player *player)
             bullet_remove(container->bullets, i);
         }
 
-        //
+        // Player hit
         if (aabb_collision_detection(player->x, player->y, player->w, player->h, bullet->x, bullet->y, container->config.bullet_width, container->config.bullet_height))
         {
             bullet_remove(container->bullets, i);
 
-            //TODO: Player health
+            player->health--;
+
+            // Player died
+            if (player->health <= 0)
+            {
+                //TODO: Show player death effect then reset
+
+                play_sfx(player->sounds[PLAYER_DIE], CH_PLAYER_DIE);
+            }
         }
     }
 

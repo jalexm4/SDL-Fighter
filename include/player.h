@@ -5,6 +5,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "bullets.h"
 
@@ -19,15 +20,25 @@ typedef struct
     int y_velocity;
     int speed;
 
+    int health;
+
     BulletVector *bullets;
     int reload;
     int bullet_width;
     int bullet_height;
     int bullet_speed;
+
+    // Audio
+    Mix_Chunk *sounds[2];
 } Player;
 
 //TODO: ^ Forward declartion to avoid circular dependency. Find better solution.
 #include "enemies.h"
+
+typedef enum {
+    PLAYER_FIRE,
+    PLAYER_DIE
+} PlayerSounds;
 
 void setup_player(Player *player, Game *game);
 void update_player(Player *player, Game *game, EnemyContainer *enemy_container);

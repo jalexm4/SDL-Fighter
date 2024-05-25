@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 
+#include "../include/audio.h"
 #include "../include/game.h"
 #include "../include/player.h"
 
@@ -40,10 +41,15 @@ void process_input(Keys *keys, Player *player)
     // --- Player Attacks ---
     if (keys->fire && player->reload == 0)
     {
+        // Reset reload timer
+        player->reload = 16;
+
+        // Add new bullet
         Bullet bullet = {player->x, player->y + (player->h / 2) - (player->bullet_height / 2)};
         bullet_push_back(player->bullets, bullet);
 
-        player->reload = 16;
+        // Play player firing sound effect
+        play_sfx(player->sounds[PLAYER_FIRE], CH_PLAYER_FIRE);
     }
 
     return;

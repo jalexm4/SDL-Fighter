@@ -49,14 +49,22 @@ typedef struct
 
 typedef struct
 {
+    EnemyConfig config;
+
     EnemyVector *enemies;
     BulletVector *bullets;
-    EnemyConfig config;
+
+    Mix_Chunk *sounds[2];
 } EnemyContainer;
 
 //TODO: ^ Forward declartion to avoid circular dependency. Find better solution.
 #include "player.h"
 
+typedef enum
+{
+    ENEMY_FIRE,
+    ENEMY_DIE
+} EnemySounds;
 
 void setup_enemies(EnemyContainer *container, Game *game);
 void update_enemies(EnemyContainer *container, Game *game, Player *player);

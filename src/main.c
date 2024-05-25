@@ -65,6 +65,7 @@ int main(void)
 
     // Start background music
     Mix_PlayMusic(game.bg_music, -1);
+    Mix_VolumeMusic(32);
 
     // --- Game Loop ---
     while (1)
@@ -121,20 +122,28 @@ int main(void)
 
     // --- Cleanup ---
 
+    // Free datastructures
     bullet_free_vector(player.bullets);
     bullet_free_vector(enemy_container.bullets);
     enemy_free_vector(enemy_container.enemies);
 
+    // Free Textures
     SDL_DestroyTexture(background.texture);
     SDL_DestroyTexture(player.texture);
     SDL_DestroyTexture(enemy_container.config.texture);
     SDL_DestroyTexture(player.bullet_texture);
     SDL_DestroyTexture(enemy_container.config.bullet_texture);
 
+    // Free audio
     Mix_FreeMusic(game.bg_music);
+    Mix_FreeChunk(player.sounds[PLAYER_FIRE]);
+    Mix_FreeChunk(player.sounds[PLAYER_DIE]);
+    Mix_FreeChunk(enemy_container.sounds[ENEMY_FIRE]);
+    Mix_FreeChunk(enemy_container.sounds[ENEMY_DIE]);
 
     Mix_CloseAudio();
 
+    // Free window
     SDL_DestroyWindow(game.window);
     SDL_DestroyRenderer(game.renderer);
 

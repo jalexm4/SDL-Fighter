@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "../include/audio.h"
 #include "../include/collision.h"
 #include "../include/player.h"
 #include "../include/enemies.h"
@@ -46,10 +47,16 @@ void setup_player(Player *player, Game *game)
     player->y_velocity = 0;
     player->speed = 500;
 
+    player->health = 1;
+
     player->bullets = bullet_create_vector();
     player->reload = 0;
     SDL_QueryTexture(player->bullet_texture, NULL, NULL, &player->bullet_width, &player->bullet_height);
     player->bullet_speed = 16;
+
+    // Load Sounds
+    player->sounds[PLAYER_FIRE] = Mix_LoadWAV("assets/audio/player_fire.ogg");
+    player->sounds[PLAYER_DIE] = Mix_LoadWAV("assets/audio/player_die.ogg");
 
     return;
 }
@@ -97,6 +104,8 @@ void update_player(Player *player, Game *game, EnemyContainer *enemy_container)
                 if (enemy->health <= 0)
                 {
                     enemy_remove(enemy_container->enemies, j);
+
+                    play_sfx(enemy_container->sounds[ENEMY_DIE], CH_ENEMY_DIE);
                 }
 
                 break;
