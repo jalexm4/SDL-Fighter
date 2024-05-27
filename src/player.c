@@ -13,6 +13,7 @@
 #include "../include/player.h"
 #include "../include/enemies.h"
 #include "../include/game.h"
+#include "../include/vfx.h"
 
 
 
@@ -61,7 +62,7 @@ void setup_player(Player *player, Game *game)
     return;
 }
 
-void update_player(Player *player, Game *game, EnemyContainer *enemy_container)
+void update_player(Player *player, Game *game, EnemyContainer *enemy_container, ExplosionVector *explosions)
 {
     // Reload timer
     if (player->reload > 0)
@@ -103,6 +104,43 @@ void update_player(Player *player, Game *game, EnemyContainer *enemy_container)
 
                 if (enemy->health <= 0)
                 {
+                    Explosion explosion;
+                    explosion.x = enemy->x + (rand() % 32) - (rand() % 32);
+                    explosion.y = enemy->y + (rand() % 32) - (rand() % 32);
+
+                    explosion.x_velocity = (rand() % 10) - (rand() % 10);
+                    explosion.y_velocity = (rand() % 10) - (rand() % 10);
+                    explosion.x_velocity /= 10;
+                    explosion.y_velocity /= 10;
+
+                    switch (rand() % 4)
+                    {
+                        case 0:
+                            explosion.r = 255;
+                            explosion.g = 0;
+                            explosion.b = 0;
+                            break;
+                        case 1:
+                            explosion.r = 255;
+                            explosion.g = 128;
+                            explosion.b = 0;
+                            break;
+                        case 2:
+                            explosion.r = 255;
+                            explosion.g = 255;
+                            explosion.b = 0;
+                            break;
+                        default:
+                            explosion.r = 255;
+                            explosion.g = 255;
+                            explosion.b = 255;
+                            break;
+                    }
+
+                    explosion.a = rand() % game->fps * 3;
+
+                    explosion_push_back(explosions, explosion);
+
                     enemy_remove(enemy_container->enemies, j);
 
                     play_sfx(enemy_container->sounds[ENEMY_DIE], CH_ENEMY_DIE);

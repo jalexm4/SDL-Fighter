@@ -8,6 +8,7 @@
 #include <SDL2/SDL_mixer.h>
 
 #include "bullets.h"
+#include "vfx.h"
 
 
 typedef struct
@@ -41,5 +42,5 @@ typedef enum {
 } PlayerSounds;
 
 void setup_player(Player *player, Game *game);
-void update_player(Player *player, Game *game, EnemyContainer *enemy_container);
+void update_player(Player *player, Game *game, EnemyContainer *enemy_container, ExplosionVector *explosions);
 void render_player(Player *player, Game *game);

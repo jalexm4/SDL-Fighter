@@ -19,6 +19,7 @@
 #include "../include/init.h"
 #include "../include/input.h"
 #include "../include/player.h"
+#include "../include/vfx.h"
 
 
 int main(void)
@@ -63,6 +64,12 @@ int main(void)
 
     setup_starfield(background.stars, &game);
 
+    // ExplosionVector *explosions = explosion_create_vector();
+    Explosions explosions;
+    explosions.texture = IMG_LoadTexture(game.renderer, "assets/explosion.png");;
+    SDL_QueryTexture(explosions.texture, NULL, NULL, &explosions.width, &explosions.height);
+    explosions.vector = explosion_create_vector();
+
     // Start background music
     Mix_PlayMusic(game.bg_music, -1);
     Mix_VolumeMusic(32);
@@ -86,10 +93,11 @@ int main(void)
 
         // --- Update Entities ---
 
-        update_player(&player, &game, &enemy_container);
+        update_player(&player, &game, &enemy_container, explosions.vector);
         update_enemies(&enemy_container, &game, &player);
 
         update_background(&background, &game);
+        update_explosions(&explosions);
 
         // --- Render ---
 
@@ -97,6 +105,7 @@ int main(void)
         SDL_RenderClear(game.renderer);
 
         render_background(&background, &game);
+        render_explosions(&game, &explosions);
 
         render_player(&player, &game);
         render_enemies(&enemy_container, &game);
@@ -126,6 +135,7 @@ int main(void)
     bullet_free_vector(player.bullets);
     bullet_free_vector(enemy_container.bullets);
     enemy_free_vector(enemy_container.enemies);
+    explosion_free_vector(explosions.vector);
 
     // Free Textures
     SDL_DestroyTexture(background.texture);
@@ -133,6 +143,7 @@ int main(void)
     SDL_DestroyTexture(enemy_container.config.texture);
     SDL_DestroyTexture(player.bullet_texture);
     SDL_DestroyTexture(enemy_container.config.bullet_texture);
+    SDL_DestroyTexture(explosions.texture);
 
     // Free audio
     Mix_FreeMusic(game.bg_music);

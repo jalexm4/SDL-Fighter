@@ -3,7 +3,7 @@
 #include "game.h"
 
 
-typedef struct{
+typedef struct {
     int x, y;
     int speed;
 } Star;
@@ -14,6 +14,7 @@ typedef struct {
 
     Star stars[500];
 } Background;
+
 
 void setup_starfield(Star *stars, Game *game);
 void update_background(Background *background, Game *game);
