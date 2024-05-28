@@ -104,6 +104,9 @@ void update_player(Player *player, Game *game, EnemyContainer *enemy_container, 
 
                 if (enemy->health <= 0)
                 {
+                    game->score++;
+                    game->score_changed = true;
+
                     Explosion explosion;
                     explosion.x = enemy->x + (rand() % 32) - (rand() % 32);
                     explosion.y = enemy->y + (rand() % 32) - (rand() % 32);

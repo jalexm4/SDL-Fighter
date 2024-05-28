@@ -16,6 +16,7 @@
 #include "../include/collision.h"
 #include "../include/enemies.h"
 #include "../include/game.h"
+#include "../include/hud.h"
 #include "../include/init.h"
 #include "../include/input.h"
 #include "../include/player.h"
@@ -33,6 +34,8 @@ int main(void)
     game.window_width = 1280;
     game.window_height = 720;
 
+    game.score = 0;
+    game.score_changed = false;
     game.delta_time = 0.0;
     game.last_frame_time = 0;
     game.fps = 0;
@@ -64,11 +67,15 @@ int main(void)
 
     setup_starfield(background.stars, &game);
 
-    // ExplosionVector *explosions = explosion_create_vector();
     Explosions explosions;
     explosions.texture = IMG_LoadTexture(game.renderer, "assets/explosion.png");;
     SDL_QueryTexture(explosions.texture, NULL, NULL, &explosions.width, &explosions.height);
     explosions.vector = explosion_create_vector();
+
+    Hud hud;
+    hud.texture = IMG_LoadTexture(game.renderer, "assets/font.png");
+    SDL_QueryTexture(hud.texture, NULL, NULL, &hud.width, &hud.height);
+    sprintf(hud.score, "SCORE: 000");
 
     // Start background music
     Mix_PlayMusic(game.bg_music, -1);
@@ -99,6 +106,8 @@ int main(void)
         update_background(&background, &game);
         update_explosions(&explosions);
 
+        update_hud(&game, &hud);
+
         // --- Render ---
 
         // Clear previous frame
@@ -109,6 +118,8 @@ int main(void)
 
         render_player(&player, &game);
         render_enemies(&enemy_container, &game);
+
+        render_hud(&game, &hud);
 
         // Flip front and back buffers
         SDL_RenderPresent(game.renderer);
@@ -144,6 +155,7 @@ int main(void)
     SDL_DestroyTexture(player.bullet_texture);
     SDL_DestroyTexture(enemy_container.config.bullet_texture);
     SDL_DestroyTexture(explosions.texture);
+    SDL_DestroyTexture(hud.texture);
 
     // Free audio
     Mix_FreeMusic(game.bg_music);

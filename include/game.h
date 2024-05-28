@@ -20,6 +20,10 @@ typedef struct
     SDL_Window *window;
     SDL_Renderer *renderer;
 
+    // Scoring
+    unsigned int score;
+    bool score_changed;
+
     // Delatime
     float delta_time;
     int last_frame_time;
