@@ -21,6 +21,7 @@ static void detect_enemy_bounds_collision(EnemyContainer *container)
         if (enemy->x + container->config.width < 0)
         {
             enemy_remove(container->enemies, i);
+            container->config.alive--;
         }
     }
 
@@ -37,7 +38,7 @@ void setup_enemies(EnemyContainer *container, Game *game)
 
     container->config.respawn_timer = -1;
     container->config.alive = 0;
-    container->config.max = 5;
+    container->config.max = 3;
     container->config.default_health = 1;
     container->config.bullet_speed = -10;
 
@@ -126,6 +127,7 @@ void update_enemies(EnemyContainer *container, Game *game, Player *player)
             if (player->health <= 0)
             {
                 //TODO: Show player death effect then reset
+                game->reset = true;
 
                 play_sfx(player->sounds[PLAYER_DIE], CH_PLAYER_DIE);
             }

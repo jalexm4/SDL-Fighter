@@ -12,6 +12,7 @@ typedef struct {
     int height;
 
     char score[11];
+    char highscore[16];
 } Hud;
 
 void update_hud(Game *game, Hud *hud);

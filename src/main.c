@@ -36,6 +36,7 @@ int main(void)
 
     game.score = 0;
     game.score_changed = false;
+    game.highscore = 0;
     game.delta_time = 0.0;
     game.last_frame_time = 0;
     game.fps = 0;
@@ -43,6 +44,8 @@ int main(void)
     game.frame_time = 0.0;
 
     game.bg_music = NULL;
+
+    game.reset = false;
 
     if (init_sdl(&game))
     {
@@ -76,6 +79,7 @@ int main(void)
     hud.texture = IMG_LoadTexture(game.renderer, "assets/font.png");
     SDL_QueryTexture(hud.texture, NULL, NULL, &hud.width, &hud.height);
     sprintf(hud.score, "SCORE: 000");
+    sprintf(hud.highscore, "HIGH SCORE: 000");
 
     // Start background music
     Mix_PlayMusic(game.bg_music, -1);
@@ -102,6 +106,34 @@ int main(void)
 
         update_player(&player, &game, &enemy_container, explosions.vector);
         update_enemies(&enemy_container, &game, &player);
+
+        // Check if game should reset
+        if (game.reset)
+        {
+            game.reset = false;
+
+            // Reset Player
+            player.x = 100;
+            player.y = 100;
+            player.health = 1;
+            bullet_free_vector(player.bullets);
+            player.bullets = bullet_create_vector();
+
+            // Reset Enemies
+            bullet_free_vector(enemy_container.bullets);
+            enemy_free_vector(enemy_container.enemies);
+
+            enemy_container.bullets = bullet_create_vector();
+            enemy_container.enemies = enemy_create_vector();
+
+            enemy_container.config.alive = 0;
+
+            // Reset score
+            game.score = 0;
+            sprintf(hud.score, "SCORE: 000");
+
+            continue;
+        }
 
         update_background(&background, &game);
         update_explosions(&explosions);

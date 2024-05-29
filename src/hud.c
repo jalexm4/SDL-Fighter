@@ -16,11 +16,21 @@ void update_hud(Game *game, Hud *hud)
         game->score_changed = false;
 
         char score[4];
+
+        // Update player score
         sprintf(score, "%03d", game->score);
 
         for (int i = 0; i < 3; i++)
         {
             hud->score[7 + i] = score[i];
+        }
+
+        // Update highscore
+        sprintf(score, "%03d", game->highscore);
+
+        for (int i = 0; i < 3; i++)
+        {
+            hud->highscore[12 + i] = score[i];
         }
     }
 
@@ -57,6 +67,16 @@ void render_text(Game *game, Hud *hud, int x, int y, int r, int g, int b, char *
 void render_hud(Game *game, Hud *hud)
 {
     render_text(game, hud, 10, 10, 255, 255, 255, hud->score);
+
+    if (game->score > 0 && game->score == game->highscore)
+    {
+        render_text(game, hud, 960, 10, 0, 255, 0, hud->highscore);
+    }
+    else
+    {
+        render_text(game, hud, 960, 10, 255, 255, 255, hud->highscore);
+    }
+
 
     return;
 }

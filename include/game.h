@@ -23,6 +23,7 @@ typedef struct
     // Scoring
     unsigned int score;
     bool score_changed;
+    unsigned int highscore;
 
     // Delatime
     float delta_time;
@@ -35,6 +36,9 @@ typedef struct
 
     // Audio
     Mix_Music *bg_music;
+
+    // Reset if player dies
+    bool reset;
 } Game;
 
 typedef struct

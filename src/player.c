@@ -107,6 +107,13 @@ void update_player(Player *player, Game *game, EnemyContainer *enemy_container, 
                     game->score++;
                     game->score_changed = true;
 
+                    if (game->score > game->highscore)
+                    {
+                        game->highscore = game->score;
+                    }
+
+                    enemy_container->config.alive--;
+
                     Explosion explosion;
                     explosion.x = enemy->x + (rand() % 32) - (rand() % 32);
                     explosion.y = enemy->y + (rand() % 32) - (rand() % 32);
