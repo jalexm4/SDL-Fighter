@@ -77,6 +77,16 @@ void render_hud(Game *game, Hud *hud)
         render_text(game, hud, 960, 10, 255, 255, 255, hud->highscore);
     }
 
+    char fps[4];
+    sprintf(fps, "%d", game->fps);
+
+    for (int i = 0; i < 3; i++)
+    {
+        hud->fps[5 + i] = fps[i];
+    }
+
+    render_text(game, hud, game->window_width - 150, game->window_height - 50, 255, 0, 0, hud->fps);
+
 
     return;
 }

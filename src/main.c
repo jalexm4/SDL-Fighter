@@ -80,6 +80,7 @@ int main(void)
     SDL_QueryTexture(hud.texture, NULL, NULL, &hud.width, &hud.height);
     sprintf(hud.score, "SCORE: 000");
     sprintf(hud.highscore, "HIGH SCORE: 000");
+    sprintf(hud.fps, "FPS: 0");
 
     // Start background music
     Mix_PlayMusic(game.bg_music, -1);
@@ -168,7 +169,7 @@ int main(void)
             game.frame_counter = 0;
             game.frame_time = 0;
 
-            printf("[*] %i FPS\n", game.fps);
+            // printf("[*] %i FPS\n", game.fps);
         }
     }
 

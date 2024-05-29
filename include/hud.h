@@ -11,8 +11,10 @@ typedef struct {
     int width;
     int height;
 
+    // HUD - Gameloop
     char score[11];
     char highscore[16];
+    char fps[9];
 } Hud;
 
 void update_hud(Game *game, Hud *hud);
