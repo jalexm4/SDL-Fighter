@@ -20,6 +20,7 @@
 #include "../include/init.h"
 #include "../include/input.h"
 #include "../include/player.h"
+#include "../include/scores.h"
 #include "../include/vfx.h"
 
 
@@ -121,7 +122,8 @@ int main(void)
             game.score = 0;
             sprintf(hud.score, "SCORE: 000");
 
-            //TODO: Enter Highscore view...
+            // Present user with highscores
+            trap_highscores_view(&game, &keys, &background, &hud);
 
             continue;
         }
