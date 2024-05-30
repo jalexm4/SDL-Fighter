@@ -5,12 +5,12 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include "../include/audio.h"
-#include "../include/bullets.h"
-#include "../include/collision.h"
-#include "../include/enemies.h"
-#include "../include/game.h"
-#include "../include/player.h"
+#include <audio.h>
+#include <bullets.h>
+#include <collision.h>
+#include <enemies.h>
+#include <game.h>
+#include <player.h>
 
 
 static void detect_enemy_bounds_collision(EnemyContainer *container)

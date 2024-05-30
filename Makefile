@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c18 -O3 -Wall -Wextra -Wpedantic
+CFLAGS = -std=c18 -O3 -I include/ -Wall -Wextra -Wpedantic
 LDFLAGS = `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_mixer
 
 TARGET = bin/game

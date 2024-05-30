@@ -4,8 +4,9 @@
 
 #include <SDL2/SDL.h>
 
-#include "../include/background.h"
-#include "../include/game.h"
+#include <background.h>
+#include <game.h>
+
 
 static void update_starfield(Star *stars, Game *game)
 {

@@ -7,8 +7,8 @@
 
 #include <SDL2/SDL.h>
 
-#include "../include/game.h"
-#include "../include/vfx.h"
+#include <game.h>
+#include <vfx.h>
 
 
 void update_explosions(Explosions *explosions)

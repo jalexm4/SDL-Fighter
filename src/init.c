@@ -6,8 +6,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 
-#include "../include/audio.h"
-#include "../include/game.h"
+#include <audio.h>
+#include <game.h>
 
 
 int init_sdl(Game *game)

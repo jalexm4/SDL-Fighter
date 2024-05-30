@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "game.h"
+#include <game.h>
 
 
 int init_sdl(Game *game);

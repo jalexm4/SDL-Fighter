@@ -8,9 +8,8 @@
 
 #include <SDL2/SDL.h>
 
-#include "bullets.h"
-#include "game.h"
-// #include "player.h"
+#include <bullets.h>
+#include <game.h>
 
 
 typedef struct
@@ -58,7 +57,7 @@ typedef struct
 } EnemyContainer;
 
 //TODO: ^ Forward declartion to avoid circular dependency. Find better solution.
-#include "player.h"
+#include <player.h>
 
 typedef enum
 {

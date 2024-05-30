@@ -7,8 +7,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
-#include "bullets.h"
-#include "vfx.h"
+#include <bullets.h>
+#include <vfx.h>
 
 
 typedef struct

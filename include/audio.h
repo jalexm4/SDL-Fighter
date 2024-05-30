@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL_mixer.h>
 
-#include "game.h"
+#include <game.h>
 
 
 #define AUDIO_MAX_CHANNELS (4)

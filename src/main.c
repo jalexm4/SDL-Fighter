@@ -10,18 +10,18 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 
-#include "../include/audio.h"
-#include "../include/background.h"
-#include "../include/bullets.h"
-#include "../include/collision.h"
-#include "../include/enemies.h"
-#include "../include/game.h"
-#include "../include/hud.h"
-#include "../include/init.h"
-#include "../include/input.h"
-#include "../include/player.h"
-#include "../include/scores.h"
-#include "../include/vfx.h"
+#include <audio.h>
+#include <background.h>
+#include <bullets.h>
+#include <collision.h>
+#include <enemies.h>
+#include <game.h>
+#include <hud.h>
+#include <init.h>
+#include <input.h>
+#include <player.h>
+#include <scores.h>
+#include <vfx.h>
 
 
 int main(void)

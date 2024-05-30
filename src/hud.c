@@ -4,8 +4,8 @@
 
 #include <SDL2/SDL.h>
 
-#include "../include/game.h"
-#include "../include/hud.h"
+#include <game.h>
+#include <hud.h>
 
 
 void update_hud(Game *game, Hud *hud)

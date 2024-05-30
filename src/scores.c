@@ -2,11 +2,11 @@
 //
 //
 
-#include "../include/game.h"
-#include "../include/input.h"
-#include "../include/hud.h"
-#include "../include/background.h"
-#include "../include/scores.h"
+#include <background.h>
+#include <game.h>
+#include <hud.h>
+#include <input.h>
+#include <scores.h>
 
 void trap_highscores_view(Game *game, Keys *keys, Background *background, Hud *hud)
 {

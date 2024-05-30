@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../include/bullets.h"
+#include <bullets.h>
 
 
 BulletVector *bullet_create_vector()
