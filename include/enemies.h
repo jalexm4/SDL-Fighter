@@ -68,6 +68,7 @@ typedef enum
 
 void setup_enemies(EnemyContainer *container, Game *game);
 void update_enemies(EnemyContainer *container, Game *game, Player *player);
+void reset_enemies(EnemyContainer *container);
 void render_enemies(EnemyContainer *container, Game *game);
 
 EnemyVector *enemy_create_vector();

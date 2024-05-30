@@ -31,6 +31,14 @@ void update_explosions(Explosions *explosions)
     return;
 }
 
+void reset_explosions(Explosions *explosions)
+{
+    explosion_free_vector(explosions->vector);
+    explosions->vector = explosion_create_vector();
+
+    return;
+}
+
 void render_explosions(Game *game, Explosions *explosions)
 {
     SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_ADD);

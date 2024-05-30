@@ -137,6 +137,19 @@ void update_enemies(EnemyContainer *container, Game *game, Player *player)
     return;
 }
 
+void reset_enemies(EnemyContainer *container)
+{
+    bullet_free_vector(container->bullets);
+    enemy_free_vector(container->enemies);
+
+    container->bullets = bullet_create_vector();
+    container->enemies = enemy_create_vector();
+
+    container->config.alive = 0;
+
+    return;
+}
+
 void render_enemies(EnemyContainer *container, Game *game)
 {
     // Render enemies

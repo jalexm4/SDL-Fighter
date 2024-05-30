@@ -113,29 +113,15 @@ int main(void)
         {
             game.reset = false;
 
-            // Reset Player
-            player.x = 100;
-            player.y = 100;
-            player.health = 1;
-            bullet_free_vector(player.bullets);
-            player.bullets = bullet_create_vector();
-
-            // Reset Enemies
-            bullet_free_vector(enemy_container.bullets);
-            enemy_free_vector(enemy_container.enemies);
-
-            enemy_container.bullets = bullet_create_vector();
-            enemy_container.enemies = enemy_create_vector();
-
-            enemy_container.config.alive = 0;
-
-            // Reset Explosions
-            explosion_free_vector(explosions.vector);
-            explosions.vector = explosion_create_vector();
+            reset_player(&game, &player);
+            reset_enemies(&enemy_container);
+            reset_explosions(&explosions);
 
             // Reset score
             game.score = 0;
             sprintf(hud.score, "SCORE: 000");
+
+            //TODO: Enter Highscore view...
 
             continue;
         }

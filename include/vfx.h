@@ -23,6 +23,7 @@ typedef struct {
 
 
 void update_explosions(Explosions *explosions);
+void reset_explosions(Explosions *explosions);
 void render_explosions(Game *game, Explosions *explosions);
 
 ExplosionVector *explosion_create_vector(void);

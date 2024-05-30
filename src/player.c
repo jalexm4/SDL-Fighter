@@ -42,7 +42,7 @@ void setup_player(Player *player, Game *game)
     player->bullet_texture = IMG_LoadTexture(game->renderer, "assets/player_bullet.png");
 
     player->x = 100;
-    player->y = 100;
+    player->y = game->window_height / 2;
     SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
     player->x_velocity = 0;
     player->y_velocity = 0;
@@ -160,6 +160,17 @@ void update_player(Player *player, Game *game, EnemyContainer *enemy_container, 
             }
         }
     }
+
+    return;
+}
+
+void reset_player(Game *game, Player *player)
+{
+    player->x = 100;
+    player->y = game->window_height / 2;
+    player->health = 1;
+    bullet_free_vector(player->bullets);
+    player->bullets = bullet_create_vector();
 
     return;
 }

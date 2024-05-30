@@ -43,4 +43,5 @@ typedef enum {
 
 void setup_player(Player *player, Game *game);
 void update_player(Player *player, Game *game, EnemyContainer *enemy_container, ExplosionVector *explosions);
+void reset_player(Game *game, Player *player);
 void render_player(Player *player, Game *game);
