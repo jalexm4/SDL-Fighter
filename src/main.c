@@ -129,6 +129,10 @@ int main(void)
 
             enemy_container.config.alive = 0;
 
+            // Reset Explosions
+            explosion_free_vector(explosions.vector);
+            explosions.vector = explosion_create_vector();
+
             // Reset score
             game.score = 0;
             sprintf(hud.score, "SCORE: 000");
@@ -168,6 +172,8 @@ int main(void)
             game.fps = game.frame_counter / game.frame_time;
             game.frame_counter = 0;
             game.frame_time = 0;
+
+            update_hud_fps(&game, &hud);
 
             // printf("[*] %i FPS\n", game.fps);
         }

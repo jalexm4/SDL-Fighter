@@ -55,6 +55,19 @@ void process_input(Keys *keys, Player *player)
     return;
 }
 
+void clear_input(Keys *keys)
+{
+    keys->up = false;
+    keys->down = false;
+    keys->left = false;
+    keys->right = false;
+    keys->fire = false;
+
+    // keys->quit = false;
+
+    return;
+}
+
 void handle_keyboard(Keys *keys)
 {
     SDL_Event event;
