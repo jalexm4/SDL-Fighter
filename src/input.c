@@ -4,10 +4,10 @@
 
 #include <SDL2/SDL.h>
 
-#include <audio.h>
-#include <bullets.h>
-#include <game.h>
-#include <player.h>
+#include <game/audio.h>
+#include <game/bullets.h>
+#include <game/game.h>
+#include <game/player.h>
 #include <vector/vector.h>
 
 

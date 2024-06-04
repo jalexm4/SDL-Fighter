@@ -4,7 +4,7 @@
 
 #include <stdbool.h>
 
-#include <collision.h>
+#include <game/collision.h>
 
 
 // Axis-Aligned Bounding Box Collision Detection Algorithm

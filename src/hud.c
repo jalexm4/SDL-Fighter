@@ -7,8 +7,8 @@
 
 #include <SDL2/SDL.h>
 
-#include <game.h>
-#include <hud.h>
+#include <game/game.h>
+#include <game/hud.h>
 
 
 void update_hud(Game *game, Hud *hud)

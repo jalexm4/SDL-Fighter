@@ -10,19 +10,19 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 
-#include <audio.h>
-#include <background.h>
-#include <bullets.h>
-#include <collision.h>
-#include <enemies.h>
-#include <game.h>
-#include <hud.h>
-#include <init.h>
-#include <input.h>
-#include <player.h>
-#include <scores.h>
+#include <game/audio.h>
+#include <game/background.h>
+#include <game/bullets.h>
+#include <game/collision.h>
+#include <game/enemies.h>
+#include <game/game.h>
+#include <game/hud.h>
+#include <game/init.h>
+#include <game/input.h>
+#include <game/player.h>
+#include <game/scores.h>
+#include <game/vfx.h>
 #include <vector/vector.h>
-#include <vfx.h>
 
 
 Game *setup_game_config(void)

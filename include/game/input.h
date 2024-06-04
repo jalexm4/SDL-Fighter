@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <game.h>
-#include <player.h>
+#include <game/game.h>
+#include <game/player.h>
 
 
 void process_input(Keys *keys, Player *player);

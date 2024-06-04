@@ -7,8 +7,8 @@
 
 #include <SDL2/SDL.h>
 
-#include <game.h>
-#include <vfx.h>
+#include <game/game.h>
+#include <game/vfx.h>
 #include <vector/vector.h>
 
 

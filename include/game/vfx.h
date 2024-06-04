@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 
-#include <game.h>
+#include <game/game.h>
 #include <vector/vector.h>
 
 typedef struct {

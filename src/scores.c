@@ -4,11 +4,11 @@
 
 #include <stdio.h>
 
-#include <background.h>
-#include <game.h>
-#include <hud.h>
-#include <input.h>
-#include <scores.h>
+#include <game/background.h>
+#include <game/game.h>
+#include <game/hud.h>
+#include <game/input.h>
+#include <game/scores.h>
 
 void trap_highscores_view(Game *game, Keys *keys, Background *background, Hud *hud)
 {

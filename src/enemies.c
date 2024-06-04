@@ -7,11 +7,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include <audio.h>
-#include <collision.h>
-#include <enemies.h>
-#include <game.h>
-#include <player.h>
+#include <game/audio.h>
+#include <game/collision.h>
+#include <game/enemies.h>
+#include <game/game.h>
+#include <game/player.h>
 #include <vector/vector.h>
 
 

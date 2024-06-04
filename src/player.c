@@ -2,19 +2,18 @@
 //
 //
 
-#include "vector/vector.h"
 #include <stdlib.h>
 #include <stdio.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include <audio.h>
-#include <collision.h>
-#include <enemies.h>
-#include <player.h>
-#include <game.h>
-#include <vfx.h>
+#include <game/audio.h>
+#include <game/collision.h>
+#include <game/enemies.h>
+#include <game/player.h>
+#include <game/game.h>
+#include <game/vfx.h>
 
 
 static void detect_player_bounds_collision(Player *player, Game *game)

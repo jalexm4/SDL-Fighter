@@ -7,7 +7,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
-#include <vfx.h>
+#include <game/vfx.h>
 #include <vector/vector.h>
 
 
@@ -35,7 +35,7 @@ typedef struct
 } Player;
 
 //TODO: ^ Forward declartion to avoid circular dependency. Find better solution.
-#include <enemies.h>
+#include <game/enemies.h>
 
 typedef enum {
     PLAYER_FIRE,
