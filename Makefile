@@ -1,14 +1,21 @@
 CC = gcc
-CFLAGS = -std=c18 -O3 -I include/ -Wall -Wextra -Wpedantic
+CFLAGS = -std=c18 -O3 -I include/ -Wall -Wextra
 LDFLAGS = `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_mixer
 
-TARGET = bin/game
+TARGET = bin/opengl
 
-$(TARGET): src/*.c
-	$(CC) -o $@ src/main.c src/audio.c src/background.c src/bullets.c src/collision.c src/enemies.c src/hud.c src/init.c src/input.c src/player.c src/scores.c src/vfx.c $(CFLAGS) $(LDFLAGS)
+SRC = $(wildcard src/*.c)
+OBJ = $(SRC:src/%.c=bin/%.o)
+
+$(TARGET): $(OBJ)
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+bin/%.o: src/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 run: $(TARGET)
-	bin/game
+	bin/opengl
 
+.PHONY: clean
 clean:
-	rm bin/game
+	rm bin/*.o $(TARGET)
