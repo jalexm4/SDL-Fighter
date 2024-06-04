@@ -10,6 +10,7 @@
 
 #include <bullets.h>
 #include <game.h>
+#include <vector/vector.h>
 
 
 typedef struct
@@ -20,13 +21,6 @@ typedef struct
     int health;
     int attack_timer;
 } Enemy;
-
-typedef struct
-{
-    Enemy *data;
-    unsigned int size;
-    unsigned int capacity;
-} EnemyVector;
 
 typedef struct
 {
@@ -50,8 +44,8 @@ typedef struct
 {
     EnemyConfig config;
 
-    EnemyVector *enemies;
-    BulletVector *bullets;
+    Vector *vector;
+    Vector *bullets;
 
     Mix_Chunk *sounds[2];
 } EnemyContainer;
@@ -69,10 +63,3 @@ void setup_enemies(EnemyContainer *container, Game *game);
 void update_enemies(EnemyContainer *container, Game *game, Player *player);
 void reset_enemies(EnemyContainer *container);
 void render_enemies(EnemyContainer *container, Game *game);
-
-EnemyVector *enemy_create_vector();
-void enemy_free_vector(EnemyVector *vector);
-void enemy_resize_vector(EnemyVector *vector);
-void enemy_push_back(EnemyVector *vector, Enemy enemy);
-Enemy *enemy_get(EnemyVector *vector, int index);
-void enemy_remove(EnemyVector *vector, int index);

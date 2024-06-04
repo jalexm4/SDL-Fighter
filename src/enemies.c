@@ -8,21 +8,23 @@
 #include <SDL2/SDL_image.h>
 
 #include <audio.h>
-#include <bullets.h>
 #include <collision.h>
 #include <enemies.h>
 #include <game.h>
 #include <player.h>
+#include <vector/vector.h>
 
 
 static void detect_enemy_bounds_collision(EnemyContainer *container)
 {
-    for (int i = 0, n = container->enemies->size; i < n; i++)
+    for (size_t i = 0, n = container->vector->size; i < n; i++)
     {
-        Enemy *enemy = enemy_get(container->enemies, i);
+        // Enemy *enemy = enemy_get(container->enemies, i);
+        Enemy *enemy = vector_get(container->vector, i);
         if (enemy->x + container->config.width < 0)
         {
-            enemy_remove(container->enemies, i);
+            // enemy_remove(container->enemies, i);
+            vector_remove(container->vector, i);
             container->config.alive--;
         }
     }
@@ -44,8 +46,10 @@ void setup_enemies(EnemyContainer *container, Game *game)
     container->config.default_health = 1;
     container->config.bullet_speed = -10;
 
-    container->enemies = enemy_create_vector();
-    container->bullets = bullet_create_vector();
+    // container->enemies = enemy_create_vector();
+    container->vector = vector_create(10);
+    container->bullets = vector_create(10);
+    // container->bullets = bullet_create_vector();
 
     container->sounds[ENEMY_FIRE] = Mix_LoadWAV("assets/audio/alien_fire.ogg");
     container->sounds[ENEMY_DIE] = Mix_LoadWAV("assets/audio/alien_die.ogg");
@@ -67,15 +71,14 @@ void update_enemies(EnemyContainer *container, Game *game, Player *player)
         // Number of enemies currently active
         container->config.alive++;
 
-        // New enemy preset
-        Enemy new_enemy;
-        new_enemy.x = game->window_width;
-        new_enemy.y = rand() % game->window_height;
-        new_enemy.x_velocity = -(2 + (rand() % 4));
-        new_enemy.health = container->config.default_health;
-        new_enemy.attack_timer = 100;
+        Enemy *new_enemy = malloc(sizeof(Enemy));
+        new_enemy->x = game->window_width;
+        new_enemy->y = rand() % game->window_height;
+        new_enemy->x_velocity = -(2 + (rand() % 4));
+        new_enemy->health = container->config.default_health;
+        new_enemy->attack_timer = 100;
 
-        enemy_push_back(container->enemies, new_enemy);
+        vector_push_back(container->vector, new_enemy);
     }
     else
     {
@@ -83,9 +86,10 @@ void update_enemies(EnemyContainer *container, Game *game, Player *player)
     }
 
     // Update Enemy POS and attack
-    for (int i = 0, n = container->enemies->size; i < n; i++)
+    for (size_t i = 0, n = container->vector->size; i < n; i++)
     {
-        Enemy *enemy = enemy_get(container->enemies, i);
+        Enemy *enemy = vector_get(container->vector, i);
+
         enemy->x += enemy->x_velocity;
         enemy->attack_timer--;
 
@@ -96,11 +100,16 @@ void update_enemies(EnemyContainer *container, Game *game, Player *player)
             enemy->attack_timer = 100;
 
             //TODO: Calculate slope between enemy and player to fire bullet at player
-            Bullet new_bullet;
-            new_bullet.x = enemy->x;
-            new_bullet.y = enemy->y + (container->config.height / 2) - (container->config.bullet_height / 2);
+            // Bullet new_bullet;
+            // new_bullet.x = enemy->x;
+            // new_bullet.y = enemy->y + (container->config.height / 2) - (container->config.bullet_height / 2);
 
-            bullet_push_back(container->bullets, new_bullet);
+            Bullet *new_bullet = malloc(sizeof(Bullet));
+            new_bullet->x = enemy->x;
+            new_bullet->y = enemy->y + (container->config.height / 2) - (container->config.bullet_height / 2);
+
+            // bullet_push_back(container->bullets, new_bullet);
+            vector_push_back(container->bullets, new_bullet);
 
             play_sfx(container->sounds[ENEMY_FIRE], CH_ENEMY_FIRE);
         }
@@ -109,19 +118,24 @@ void update_enemies(EnemyContainer *container, Game *game, Player *player)
     // Update Enemy Bullets
     for (int i = 0, n = container->bullets->size; i < n; i++)
     {
-        Bullet *bullet = bullet_get(container->bullets, i);
+        // Bullet *bullet = bullet_get(container->bullets, i);
+
+        Bullet *bullet = vector_get(container->bullets, i);
+
         bullet->x += container->config.bullet_speed;
 
         // Destroy any bullets that leave left side of the window
         if (bullet->x <= 0)
         {
-            bullet_remove(container->bullets, i);
+            // bullet_remove(container->bullets, i);
+            vector_remove(container->bullets, i);
         }
 
         // Player hit
         if (aabb_collision_detection(player->x, player->y, player->w, player->h, bullet->x, bullet->y, container->config.bullet_width, container->config.bullet_height))
         {
-            bullet_remove(container->bullets, i);
+            // bullet_remove(container->bullets, i);
+            vector_remove(container->bullets, i);
 
             player->health--;
 
@@ -141,11 +155,13 @@ void update_enemies(EnemyContainer *container, Game *game, Player *player)
 
 void reset_enemies(EnemyContainer *container)
 {
-    bullet_free_vector(container->bullets);
-    enemy_free_vector(container->enemies);
+    // bullet_free_vector(container->bullets);
+    vector_free(container->bullets);
+    vector_free(container->vector);
 
-    container->bullets = bullet_create_vector();
-    container->enemies = enemy_create_vector();
+    // container->bullets = bullet_create_vector();
+    container->bullets = vector_create(10);
+    container->vector = vector_create(10);
 
     container->config.alive = 0;
 
@@ -155,9 +171,9 @@ void reset_enemies(EnemyContainer *container)
 void render_enemies(EnemyContainer *container, Game *game)
 {
     // Render enemies
-    for (int i = 0, n = container->enemies->size; i < n; i++)
+    for (size_t i = 0, n = container->vector->size; i < n; i++)
     {
-        Enemy *enemy = enemy_get(container->enemies, i);
+        Enemy *enemy = vector_get(container->vector, i);
 
         SDL_Rect enemy_rect = {enemy->x, enemy->y, container->config.width, container->config.height};
         SDL_RenderCopy(game->renderer, container->config.texture, NULL, &enemy_rect);
@@ -166,91 +182,12 @@ void render_enemies(EnemyContainer *container, Game *game)
     // Render enemies bullets
     for (int i = 0, n = container->bullets->size; i < n; i++)
     {
-        Bullet *bullet = bullet_get(container->bullets, i);
+        // Bullet *bullet = bullet_get(container->bullets, i);
+        Bullet *bullet = vector_get(container->bullets, i);
 
         SDL_Rect bullet_rect = {bullet->x, bullet->y, container->config.bullet_width, container->config.bullet_height};
         SDL_RenderCopy(game->renderer, container->config.bullet_texture, NULL, &bullet_rect);
     }
-
-    return;
-}
-
-
-EnemyVector *enemy_create_vector()
-{
-    // Allocate data for a vector
-    EnemyVector *vector = malloc(sizeof(EnemyVector));
-    if (vector == NULL)
-    {
-        printf("[*] Unable to allocate memory\n");
-        return NULL;
-    }
-
-    // Allocate room for 10 enemies
-    vector->data = malloc(10 * sizeof(Enemy));
-    if (vector->data == NULL)
-    {
-        printf("[*] Unable to allocate memory\n");
-        return NULL;
-    }
-
-    vector->size = 0;        // No bullest to start with
-    vector->capacity = 10;   // Can hold 10 bullets without resizing
-
-    return vector;
-}
-
-void enemy_free_vector(EnemyVector *vector)
-{
-    free(vector->data);
-    free(vector);
-
-    return;
-}
-
-void enemy_resize_vector(EnemyVector *vector)
-{
-    // Double vector capacity
-    vector->capacity *= 2;
-
-    vector->data = realloc(vector->data, vector->capacity * sizeof(EnemyVector));
-    if (vector->data == NULL)
-    {
-        printf("[*] Unable to allocate memory\n");
-    }
-
-    return;
-}
-
-void enemy_push_back(EnemyVector *vector, Enemy enemy)
-{
-    // Resize vector if needed
-    if (vector->size == vector->capacity)
-    {
-        enemy_resize_vector(vector);
-    }
-
-    // Place data into the vector
-    vector->data[vector->size++] = enemy;
-
-    return;
-}
-
-Enemy *enemy_get(EnemyVector *vector, int index)
-{
-    return &(vector->data[index]);
-}
-
-
-void enemy_remove(EnemyVector *vector, int index)
-{
-    // Shift Vector
-    for (unsigned int i = index; i < vector->size - 1; i++)
-    {
-        vector->data[i] = vector->data[i + 1];
-    }
-
-    vector->size--;
 
     return;
 }

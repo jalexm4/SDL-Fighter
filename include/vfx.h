@@ -1,5 +1,9 @@
 #pragma once
 
+#include <SDL2/SDL.h>
+
+#include <game.h>
+#include <vector/vector.h>
 
 typedef struct {
     int x, y;
@@ -7,28 +11,16 @@ typedef struct {
     int r, g, b, a;
 } Explosion;
 
-typedef struct {
-    Explosion *data;
-    unsigned int size;
-    unsigned int capacity;
-} ExplosionVector;
 
 typedef struct {
     SDL_Texture *texture;
     int width;
     int height;
 
-    ExplosionVector *vector;
+    Vector *vector;
 } Explosions;
 
 
 void update_explosions(Explosions *explosions);
 void reset_explosions(Explosions *explosions);
 void render_explosions(Game *game, Explosions *explosions);
-
-ExplosionVector *explosion_create_vector(void);
-void explosion_free_vector(ExplosionVector *vector);
-void explosion_resize_vector(ExplosionVector *vector);
-void explosion_push_back(ExplosionVector *vector, Explosion data);
-Explosion *explosion_get(ExplosionVector *vector, int index);
-void explosion_remove(ExplosionVector *vector, int index);

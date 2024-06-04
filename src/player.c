@@ -2,6 +2,7 @@
 //
 //
 
+#include "vector/vector.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -10,11 +11,10 @@
 
 #include <audio.h>
 #include <collision.h>
-#include <player.h>
 #include <enemies.h>
+#include <player.h>
 #include <game.h>
 #include <vfx.h>
-
 
 
 static void detect_player_bounds_collision(Player *player, Game *game)
@@ -50,7 +50,8 @@ void setup_player(Player *player, Game *game)
 
     player->health = 1;
 
-    player->bullets = bullet_create_vector();
+    // player->bullets = bullet_create_vector();
+    player->bullets = vector_create(10);
     player->reload = 0;
     SDL_QueryTexture(player->bullet_texture, NULL, NULL, &player->bullet_width, &player->bullet_height);
     player->bullet_speed = 16;
@@ -62,7 +63,7 @@ void setup_player(Player *player, Game *game)
     return;
 }
 
-void update_player(Player *player, Game *game, EnemyContainer *enemy_container, ExplosionVector *explosions)
+void update_player(Player *player, Game *game, EnemyContainer *enemy_container, Vector *explosions)
 {
     // Reload timer
     if (player->reload > 0)
@@ -80,7 +81,8 @@ void update_player(Player *player, Game *game, EnemyContainer *enemy_container, 
     // Update Player bullets
     for (int i = 0, n = player->bullets->size; i < n; i++)
     {
-        Bullet *bullet = bullet_get(player->bullets, i);
+        // Bullet *bullet = bullet_get(player->bullets, i);
+        Bullet *bullet = vector_get(player->bullets, i);
 
         // Update player bullet positions
         bullet->x += player->bullet_speed;
@@ -88,18 +90,20 @@ void update_player(Player *player, Game *game, EnemyContainer *enemy_container, 
         // Check if bullets leave screen
         if (bullet->x >= game->window_width)
         {
-            bullet_remove(player->bullets, i);
+            // bullet_remove(player->bullets, i);
+            vector_remove(player->bullets, i);
             continue;
         }
 
         // Check AABB of bullet to each enemy
-        for (int j = 0, enemy_size = enemy_container->enemies->size; j < enemy_size; j++)
+        for (size_t j = 0, enemy_size = enemy_container->vector->size; j <enemy_size; j++)
         {
-            Enemy *enemy = enemy_get(enemy_container->enemies, j);
+            Enemy *enemy = vector_get(enemy_container->vector, j);
 
             if (aabb_collision_detection(bullet->x, bullet->y, player->bullet_width, player->bullet_height, enemy->x, enemy->y, enemy_container->config.width, enemy_container->config.height))
             {
-                bullet_remove(player->bullets, i);
+                // bullet_remove(player->bullets, i);
+                vector_remove(player->bullets, i);
                 enemy->health--;
 
                 if (enemy->health <= 0)
@@ -114,44 +118,43 @@ void update_player(Player *player, Game *game, EnemyContainer *enemy_container, 
 
                     enemy_container->config.alive--;
 
-                    Explosion explosion;
-                    explosion.x = enemy->x + (rand() % 32) - (rand() % 32);
-                    explosion.y = enemy->y + (rand() % 32) - (rand() % 32);
+                    Explosion *explosion = malloc(sizeof(Explosion));
+                    explosion->x = enemy->x + (rand() % 32) - (rand() % 32);
+                    explosion->y = enemy->y + (rand() % 32) - (rand() % 32);
 
-                    explosion.x_velocity = (rand() % 10) - (rand() % 10);
-                    explosion.y_velocity = (rand() % 10) - (rand() % 10);
-                    explosion.x_velocity /= 10;
-                    explosion.y_velocity /= 10;
+                    explosion->x_velocity = (rand() % 10) - (rand() % 10);
+                    explosion->y_velocity = (rand() % 10) - (rand() % 10);
+                    explosion->x_velocity /= 10;
+                    explosion->y_velocity /= 10;
 
                     switch (rand() % 4)
                     {
                         case 0:
-                            explosion.r = 255;
-                            explosion.g = 0;
-                            explosion.b = 0;
+                            explosion->r = 255;
+                            explosion->g = 0;
+                            explosion->b = 0;
                             break;
                         case 1:
-                            explosion.r = 255;
-                            explosion.g = 128;
-                            explosion.b = 0;
+                            explosion->r = 255;
+                            explosion->g = 128;
+                            explosion->b = 0;
                             break;
                         case 2:
-                            explosion.r = 255;
-                            explosion.g = 255;
-                            explosion.b = 0;
+                            explosion->r = 255;
+                            explosion->g = 255;
+                            explosion->b = 0;
                             break;
                         default:
-                            explosion.r = 255;
-                            explosion.g = 255;
-                            explosion.b = 255;
+                            explosion->r = 255;
+                            explosion->g = 255;
+                            explosion->b = 255;
                             break;
                     }
 
-                    explosion.a = rand() % game->fps * 3;
+                    explosion->a = rand() % game->fps * 3;
 
-                    explosion_push_back(explosions, explosion);
-
-                    enemy_remove(enemy_container->enemies, j);
+                    vector_push_back(explosions, explosion);
+                    vector_remove(enemy_container->vector, j);
 
                     play_sfx(enemy_container->sounds[ENEMY_DIE], CH_ENEMY_DIE);
                 }
@@ -169,8 +172,11 @@ void reset_player(Game *game, Player *player)
     player->x = 100;
     player->y = game->window_height / 2;
     player->health = 1;
-    bullet_free_vector(player->bullets);
-    player->bullets = bullet_create_vector();
+    // bullet_free_vector(player->bullets);
+    // player->bullets = bullet_create_vector();
+
+    vector_free(player->bullets);
+    player->bullets = vector_create(10);
 
     return;
 }
@@ -184,7 +190,8 @@ void render_player(Player *player, Game *game)
     // Render Player Bullets
     for (int i = 0, n = player->bullets->size; i < n; i++)
     {
-        Bullet *bullet = bullet_get(player->bullets, i);
+        // Bullet *bullet = bullet_get(player->bullets, i);
+        Bullet *bullet = vector_get(player->bullets, i);
 
         SDL_Rect bullet_rect = {bullet->x, bullet->y, player->bullet_width, player->bullet_height};
         SDL_RenderCopy(game->renderer, player->bullet_texture, NULL, &bullet_rect);

@@ -21,7 +21,9 @@
 #include <input.h>
 #include <player.h>
 #include <scores.h>
+#include <vector/vector.h>
 #include <vfx.h>
+
 
 Game *setup_game_config(void)
 {
@@ -90,7 +92,7 @@ int main(void)
     Explosions explosions;
     explosions.texture = IMG_LoadTexture(game->renderer, "assets/explosion.png");;
     SDL_QueryTexture(explosions.texture, NULL, NULL, &explosions.width, &explosions.height);
-    explosions.vector = explosion_create_vector();
+    explosions.vector = vector_create(10);
 
     Hud hud;
     hud.texture = IMG_LoadTexture(game->renderer, "assets/font.png");
@@ -186,10 +188,10 @@ int main(void)
     // --- Cleanup ---
 
     // Free datastructures
-    bullet_free_vector(player.bullets);
-    bullet_free_vector(enemy_container.bullets);
-    enemy_free_vector(enemy_container.enemies);
-    explosion_free_vector(explosions.vector);
+    vector_free(player.bullets);
+    vector_free(enemy_container.bullets);
+    vector_free(enemy_container.vector);
+    vector_free(explosions.vector);
 
     // Free Textures
     SDL_DestroyTexture(background.texture);

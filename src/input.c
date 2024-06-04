@@ -5,8 +5,10 @@
 #include <SDL2/SDL.h>
 
 #include <audio.h>
+#include <bullets.h>
 #include <game.h>
 #include <player.h>
+#include <vector/vector.h>
 
 
 void process_input(Keys *keys, Player *player)
@@ -45,8 +47,10 @@ void process_input(Keys *keys, Player *player)
         player->reload = 16;
 
         // Add new bullet
-        Bullet bullet = {player->x, player->y + (player->h / 2) - (player->bullet_height / 2)};
-        bullet_push_back(player->bullets, bullet);
+        Bullet *bullet = malloc(sizeof(Bullet));
+        bullet->x = player->x;
+        bullet->y = player->y + (player->h / 2) - (player->bullet_height / 2);
+        vector_push_back(player->bullets, bullet);
 
         // Play player firing sound effect
         play_sfx(player->sounds[PLAYER_FIRE], CH_PLAYER_FIRE);

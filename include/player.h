@@ -7,8 +7,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
-#include <bullets.h>
 #include <vfx.h>
+#include <vector/vector.h>
 
 
 typedef struct
@@ -23,7 +23,8 @@ typedef struct
 
     int health;
 
-    BulletVector *bullets;
+    // BulletVector *bullets;
+    Vector *bullets;
     int reload;
     int bullet_width;
     int bullet_height;
@@ -34,7 +35,7 @@ typedef struct
 } Player;
 
 //TODO: ^ Forward declartion to avoid circular dependency. Find better solution.
-#include "enemies.h"
+#include <enemies.h>
 
 typedef enum {
     PLAYER_FIRE,
@@ -42,6 +43,6 @@ typedef enum {
 } PlayerSounds;
 
 void setup_player(Player *player, Game *game);
-void update_player(Player *player, Game *game, EnemyContainer *enemy_container, ExplosionVector *explosions);
+void update_player(Player *player, Game *game, EnemyContainer *enemy_container, Vector *explosions);
 void reset_player(Game *game, Player *player);
 void render_player(Player *player, Game *game);
