@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS = -std=c18 -O3 -I include/ -Wall -Wextra
-LDFLAGS = `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_mixer
+LDFLAGS = -L lib/ -lSDL2 -lSDL2_image -lSDL2_mixer -Wl,-rpath,lib/
 
-TARGET = bin/opengl
+TARGET = bin/game
 
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:src/%.c=bin/%.o)
@@ -14,7 +14,7 @@ bin/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 run: $(TARGET)
-	bin/opengl
+	$(TARGET)
 
 .PHONY: clean
 clean:
