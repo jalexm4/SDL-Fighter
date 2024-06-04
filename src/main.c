@@ -28,7 +28,7 @@ Game *setup_game_config(void)
     Game *game = malloc(sizeof(Game));
     if (!game)
     {
-        printf("[*] Failed to malloc needed memory.\n");
+        printf("[*] Failed to allocate %lu bytes\n", sizeof(Game));
         return game;
     }
 

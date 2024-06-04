@@ -2,6 +2,8 @@
 //
 //
 
+#include <stdio.h>
+
 #include <background.h>
 #include <game.h>
 #include <hud.h>

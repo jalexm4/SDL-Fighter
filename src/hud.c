@@ -2,6 +2,9 @@
 //
 //
 
+#include <stdio.h>
+#include <string.h>
+
 #include <SDL2/SDL.h>
 
 #include <game.h>
