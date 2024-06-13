@@ -1,0 +1,1 @@
+../../external/SDL2_image/include/SDL_image.h

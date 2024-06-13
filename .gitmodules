@@ -5,3 +5,11 @@
 [submodule "external/vector"]
 	path = external/vector
 	url = git@github.com:jalexm4/vector.git
+[submodule "external/SDL2_image"]
+	path = external/SDL2_image
+	url = https://github.com/libsdl-org/SDL_image.git
+	branch = SDL2
+[submodule "external/SDL2_mixer"]
+	path = external/SDL2_mixer
+	url = https://github.com/libsdl-org/SDL_mixer.git
+	branch = SDL2
